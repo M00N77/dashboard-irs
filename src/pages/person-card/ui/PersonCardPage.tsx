@@ -15,12 +15,14 @@ import EditPersonGeneral from '@features/edit-person-general/ui/EditPersonGenera
 import EditFamily from '@features/edit-family/ui/EditFamily'
 import EditEducation from '@features/edit-education/ui/EditEducation'
 import EditHousing from '@features/edit-housing/ui/EditHousing'
+import EditAppeal from '@features/edit-appeal/ui/EditAppeal'
 
 const TABS = [
   { value: 'general', label: 'Общие сведения' },
   { value: 'family', label: 'Семья' },
   { value: 'education', label: 'Образование' },
   { value: 'housing', label: 'Жильё' },
+  { value: 'appeals', label: 'Обращения' },
 ]
 
 function calculateAge(birthDate: string): number {
@@ -135,6 +137,7 @@ export default function PersonCardPage() {
         {activeTab === 'family' && <EditFamily person={person} />}
         {activeTab === 'education' && <EditEducation person={person} />}
         {activeTab === 'housing' && <EditHousing person={person} />}
+        {activeTab === 'appeals' && <EditAppeal person={person} />}
       </Box>
     </Container>
   )
