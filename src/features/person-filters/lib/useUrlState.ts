@@ -1,9 +1,7 @@
 import { useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
-const SUPPORTED_KEYS = ['page', 'limit', 'search', 'status', 'region', 'sortBy', 'sortOrder'] as const
-
-type SupportedKey = (typeof SUPPORTED_KEYS)[number]
+type SupportedKey = 'page' | 'limit' | 'search' | 'status' | 'region' | 'sortBy' | 'sortOrder'
 
 export function useUrlState() {
   const [searchParams, setSearchParams] = useSearchParams()

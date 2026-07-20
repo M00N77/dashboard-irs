@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import Stack from '@mui/material/Stack'
+import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
@@ -31,10 +31,6 @@ export default function PersonFilters() {
   const [searchDraft, setSearchDraft] = useState(searchFromUrl)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  useEffect(() => {
-    setSearchDraft(searchFromUrl)
-  }, [searchFromUrl])
-
   const handleSearchChange = (value: string) => {
     setSearchDraft(value)
     if (timerRef.current) clearTimeout(timerRef.current)
@@ -59,7 +55,7 @@ export default function PersonFilters() {
   }
 
   return (
-    <Stack direction="row" spacing={2} sx={{ mb: 2 }} alignItems="center">
+    <Box sx={{ display: 'flex', gap: 2, mb: 2, alignItems: 'center' }}>
       <TextField
         size="small"
         label="Поиск"
@@ -99,6 +95,6 @@ export default function PersonFilters() {
       <Button variant="outlined" onClick={handleReset}>
         Сбросить фильтры
       </Button>
-    </Stack>
+    </Box>
   )
 }
