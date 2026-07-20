@@ -2,12 +2,12 @@ import { z } from 'zod'
 
 export const appealFormSchema = z.object({
   source: z.enum(['phone', 'email', 'portal', 'paper', 'in-person'], {
-    required_error: 'Обязательное поле',
+    errorMap: () => ({ message: 'Выберите источник' }),
   }),
   category: z.string().min(1, 'Обязательное поле'),
   registeredAt: z.string().min(1, 'Обязательное поле'),
   status: z.enum(['new', 'in-progress', 'resolved', 'rejected', 'redirected'], {
-    required_error: 'Обязательное поле',
+    errorMap: () => ({ message: 'Выберите статус' }),
   }),
   responsible: z.string().min(1, 'Обязательное поле'),
   dueDate: z.string().min(1, 'Обязательное поле'),
