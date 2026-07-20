@@ -2,9 +2,8 @@ import { http, HttpResponse, delay } from 'msw'
 import type { PersonDetails, PersonSummary } from '@entities/person/model/types'
 import type { Appeal } from '@entities/appeal/model/types'
 import type { StatsResponse } from '@shared/api/stats.api'
+import { getCachedPersons, getCachedPersonsSync } from '@shared/api/mock-data/cache'
 
-let personsCache: PersonDetails[] | null = null
-let loadPromise: Promise<PersonDetails[]> | null = null
 let cachedStats: StatsResponse | null = null
 
 function buildStats(persons: PersonDetails[]): StatsResponse {
@@ -56,35 +55,19 @@ function buildStats(persons: PersonDetails[]): StatsResponse {
   }
 }
 
-async function getCachedPersons(): Promise<PersonDetails[]> {
-  if (personsCache) return personsCache
-  if (loadPromise) return loadPromise
-
-  loadPromise = fetch('/mock-data/persons.json')
-    .then((res) => {
-      if (!res.ok) throw new Error('Failed to load mock data')
-      return res.json() as Promise<PersonDetails[]>
-    })
-    .then((data) => {
-      personsCache = data
-      cachedStats = buildStats(data)
-      return data
-    })
-
-  return loadPromise
-}
-
 function invalidateStatsCache(): void {
-  if (personsCache) {
-    cachedStats = buildStats(personsCache)
+  const cache = getCachedPersonsSync()
+  if (cache) {
+    cachedStats = buildStats(cache)
   } else {
     cachedStats = null
   }
 }
 
 function findPersonIndex(id: number): number | null {
-  if (!personsCache) return null
-  const idx = personsCache.findIndex((p) => p.id === id)
+  const cache = getCachedPersonsSync()
+  if (!cache) return null
+  const idx = cache.findIndex((p) => p.id === id)
   return idx >= 0 ? idx : null
 }
 
@@ -174,8 +157,11 @@ export const handlers = [
   }),
 
   http.get('/api/stats', async () => {
-    await getCachedPersons()
-    return HttpResponse.json(cachedStats!)
+    const persons = await getCachedPersons()
+    if (!cachedStats) {
+      cachedStats = buildStats(persons)
+    }
+    return HttpResponse.json(cachedStats)
   }),
 
   // Mutation handlers — these update the in-memory cache but do NOT persist to disk.
