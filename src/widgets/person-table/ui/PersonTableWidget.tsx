@@ -126,21 +126,27 @@ export default function PersonTableWidget() {
           <Table size="small">
             <TableHead>
               <TableRow>
-                {columns.map((col) => (
-                  <TableCell key={col.id} sx={{ px: { xs: 1, sm: 2 }, py: { xs: 1, sm: 1.5 }, minWidth: columnWidths[col.id] }}>
-                    <Skeleton variant="text" width="80%" />
-                  </TableCell>
-                ))}
+                {columns.map((col) => {
+                  const colId = col.id!
+                  return (
+                    <TableCell key={colId} sx={{ px: { xs: 1, sm: 2 }, py: { xs: 1, sm: 1.5 }, minWidth: columnWidths[colId] }}>
+                      <Skeleton variant="text" width="80%" />
+                    </TableCell>
+                  )
+                })}
               </TableRow>
             </TableHead>
             <TableBody>
               {Array.from({ length: 10 }).map((_, rowIdx) => (
                 <TableRow key={rowIdx}>
-                  {columns.map((col) => (
-                    <TableCell key={col.id} sx={{ px: { xs: 1, sm: 2 }, py: { xs: 1, sm: 1.5 }, minWidth: columnWidths[col.id] }}>
-                      <Skeleton variant="text" width="100%" />
-                    </TableCell>
-                  ))}
+                  {columns.map((col) => {
+                    const colId = col.id!
+                    return (
+                      <TableCell key={colId} sx={{ px: { xs: 1, sm: 2 }, py: { xs: 1, sm: 1.5 }, minWidth: columnWidths[colId] }}>
+                        <Skeleton variant="text" width="100%" />
+                      </TableCell>
+                    )
+                  })}
                 </TableRow>
               ))}
             </TableBody>
