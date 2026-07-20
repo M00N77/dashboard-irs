@@ -57,7 +57,7 @@ export default function EditEducation({ person }: Props) {
   })
 
   const deleteMutation = useMutation({
-    mutationFn: (recordId: string) => deleteEducationRecord(person.id, recordId),
+    mutationFn: (recordId: number) => deleteEducationRecord(person.id, recordId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['person', person.id] })
       setDeleteTarget(null)

@@ -5,7 +5,7 @@ import type { EmploymentRecord } from '@entities/employment/model/types'
 import type { HousingRecord } from '@entities/housing/model/types'
 
 export interface PersonSummary {
-  id: string
+  id: number
   firstName: string
   lastName: string
   middleName: string
@@ -13,6 +13,7 @@ export interface PersonSummary {
   gender: 'male' | 'female'
   status: string
   region: string
+  registryCode: string
 }
 
 export interface PersonDetails extends PersonSummary {

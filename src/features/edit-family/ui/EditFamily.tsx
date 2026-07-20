@@ -65,7 +65,7 @@ export default function EditFamily({ person }: Props) {
   })
 
   const deleteMutation = useMutation({
-    mutationFn: (memberId: string) => deleteFamilyMember(person.id, memberId),
+    mutationFn: (memberId: number) => deleteFamilyMember(person.id, memberId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['person', person.id] })
       setDeleteTarget(null)

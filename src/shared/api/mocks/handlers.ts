@@ -22,7 +22,7 @@ async function getCachedPersons(): Promise<PersonDetails[]> {
   return loadPromise
 }
 
-function findPersonIndex(id: string): number | null {
+function findPersonIndex(id: number): number | null {
   if (!personsCache) return null
   const idx = personsCache.findIndex((p) => p.id === id)
   return idx >= 0 ? idx : null
@@ -38,6 +38,7 @@ function toPersonSummary(details: PersonDetails): PersonSummary {
     gender: details.gender,
     status: details.status,
     region: details.region,
+    registryCode: details.registryCode,
   }
 }
 
@@ -101,7 +102,7 @@ export const handlers = [
   http.get('/api/persons/:id', async ({ params }) => {
     await randomDelay()
 
-    const { id } = params
+    const id = parseInt(params.id as string, 10)
     const allPersons = await getCachedPersons()
     const person = allPersons.find((p) => p.id === id)
 
@@ -142,7 +143,7 @@ export const handlers = [
     let totalAppeals = 0
     const byStatus: Record<string, number> = {}
     const byCategory: Record<string, number> = {}
-    const activePersonIds = new Set<string>()
+    const activePersonIds = new Set<number>()
 
     for (const p of allPersons) {
       for (const a of p.appeals) {
@@ -182,18 +183,20 @@ export const handlers = [
   http.put('/api/persons/:id', async ({ params, request }) => {
     await mutationDelay()
     const body = (await request.json()) as Record<string, unknown>
-    const idx = findPersonIndex(params.id as string)
+    const id = parseInt(params.id as string, 10)
+    const idx = findPersonIndex(id)
     if (idx !== null && personsCache) {
       personsCache[idx] = { ...personsCache[idx], ...body } as PersonDetails
     }
-    return HttpResponse.json({ id: params.id, ...body })
+    return HttpResponse.json({ id, ...body })
   }),
 
   http.post('/api/persons/:id/family', async ({ params, request }) => {
     await mutationDelay()
     const body = (await request.json()) as Record<string, unknown>
-    const newMember = { id: crypto.randomUUID(), personId: params.id as string, ...body }
-    const idx = findPersonIndex(params.id as string)
+    const personId = parseInt(params.id as string, 10)
+    const newMember = { id: Date.now(), personId, ...body }
+    const idx = findPersonIndex(personId)
     if (idx !== null && personsCache) {
       personsCache[idx].family.push(newMember as never)
     }
@@ -202,10 +205,12 @@ export const handlers = [
 
   http.delete('/api/persons/:id/family/:memberId', async ({ params }) => {
     await mutationDelay()
-    const idx = findPersonIndex(params.id as string)
+    const id = parseInt(params.id as string, 10)
+    const memberId = parseInt(params.memberId as string, 10)
+    const idx = findPersonIndex(id)
     if (idx !== null && personsCache) {
       personsCache[idx].family = personsCache[idx].family.filter(
-        (m) => m.id !== params.memberId,
+        (m) => m.id !== memberId,
       )
     }
     return HttpResponse.json(null, { status: 204 })
@@ -214,8 +219,9 @@ export const handlers = [
   http.post('/api/persons/:id/education', async ({ params, request }) => {
     await mutationDelay()
     const body = (await request.json()) as Record<string, unknown>
-    const newRecord = { id: crypto.randomUUID(), personId: params.id as string, ...body }
-    const idx = findPersonIndex(params.id as string)
+    const personId = parseInt(params.id as string, 10)
+    const newRecord = { id: Date.now(), personId, ...body }
+    const idx = findPersonIndex(personId)
     if (idx !== null && personsCache) {
       personsCache[idx].education.push(newRecord as never)
     }
@@ -224,10 +230,12 @@ export const handlers = [
 
   http.delete('/api/persons/:id/education/:recordId', async ({ params }) => {
     await mutationDelay()
-    const idx = findPersonIndex(params.id as string)
+    const id = parseInt(params.id as string, 10)
+    const recordId = parseInt(params.recordId as string, 10)
+    const idx = findPersonIndex(id)
     if (idx !== null && personsCache) {
       personsCache[idx].education = personsCache[idx].education.filter(
-        (r) => r.id !== params.recordId,
+        (r) => r.id !== recordId,
       )
     }
     return HttpResponse.json(null, { status: 204 })
@@ -238,9 +246,10 @@ export const handlers = [
   http.post('/api/persons/:id/appeals', async ({ params, request }) => {
     await mutationDelay()
     const body = (await request.json()) as Record<string, unknown>
+    const personId = parseInt(params.id as string, 10)
     const newAppeal: Appeal = {
-      id: crypto.randomUUID(),
-      personId: params.id as string,
+      id: Date.now(),
+      personId,
       source: body.source as Appeal['source'],
       category: body.category as string,
       registeredAt: body.registeredAt as string,
@@ -250,7 +259,7 @@ export const handlers = [
       resolutionText: body.resolutionText as string | undefined,
       attachments: [],
     }
-    const idx = findPersonIndex(params.id as string)
+    const idx = findPersonIndex(personId)
     if (idx !== null && personsCache) {
       personsCache[idx].appeals.push(newAppeal)
     }
@@ -260,24 +269,28 @@ export const handlers = [
   http.patch('/api/persons/:id/appeals/:appealId', async ({ params, request }) => {
     await mutationDelay()
     const body = (await request.json()) as { status: Appeal['status'] }
-    const idx = findPersonIndex(params.id as string)
+    const id = parseInt(params.id as string, 10)
+    const appealId = parseInt(params.appealId as string, 10)
+    const idx = findPersonIndex(id)
     if (idx !== null && personsCache) {
-      const appeal = personsCache[idx].appeals.find((a) => a.id === params.appealId)
+      const appeal = personsCache[idx].appeals.find((a) => a.id === appealId)
       if (appeal) {
         appeal.status = body.status
         return HttpResponse.json(appeal)
       }
       return HttpResponse.json({ error: 'Appeal Not Found' }, { status: 404 })
     }
-    return HttpResponse.json({ id: params.appealId, ...body })
+    return HttpResponse.json({ id: appealId, ...body })
   }),
 
   http.delete('/api/persons/:id/appeals/:appealId', async ({ params }) => {
     await mutationDelay()
-    const idx = findPersonIndex(params.id as string)
+    const id = parseInt(params.id as string, 10)
+    const appealId = parseInt(params.appealId as string, 10)
+    const idx = findPersonIndex(id)
     if (idx !== null && personsCache) {
       personsCache[idx].appeals = personsCache[idx].appeals.filter(
-        (a) => a.id !== params.appealId,
+        (a) => a.id !== appealId,
       )
     }
     return HttpResponse.json(null, { status: 204 })

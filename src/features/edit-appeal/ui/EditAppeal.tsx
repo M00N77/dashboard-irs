@@ -65,7 +65,7 @@ export default function EditAppeal({ person }: Props) {
   })
 
   const statusMutation = useMutation({
-    mutationFn: ({ appealId, status }: { appealId: string; status: Appeal['status'] }) =>
+    mutationFn: ({ appealId, status }: { appealId: number; status: Appeal['status'] }) =>
       updateAppealStatus(person.id, appealId, status),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['person', person.id] })
@@ -73,7 +73,7 @@ export default function EditAppeal({ person }: Props) {
   })
 
   const deleteMutation = useMutation({
-    mutationFn: (appealId: string) => deleteAppeal(person.id, appealId),
+    mutationFn: (appealId: number) => deleteAppeal(person.id, appealId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['person', person.id] })
       setDeleteTarget(null)

@@ -32,11 +32,11 @@ export function getPersons(params: GetPersonsParams): Promise<GetPersonsResponse
   return apiClient<GetPersonsResponse>(`/api/persons?${query.toString()}`)
 }
 
-export function getPersonById(id: string): Promise<PersonDetails> {
+export function getPersonById(id: number): Promise<PersonDetails> {
   return apiClient<PersonDetails>(`/api/persons/${id}`)
 }
 
-export function updatePerson(id: string, data: Partial<PersonDetails>): Promise<PersonDetails> {
+export function updatePerson(id: number, data: Partial<PersonDetails>): Promise<PersonDetails> {
   return apiClient<PersonDetails>(`/api/persons/${id}`, {
     method: 'PUT',
     body: JSON.stringify(data),
@@ -44,7 +44,7 @@ export function updatePerson(id: string, data: Partial<PersonDetails>): Promise<
 }
 
 export function addFamilyMember(
-  id: string,
+  id: number,
   data: {
     relation: FamilyMember['relation']
     firstName: string
@@ -58,14 +58,14 @@ export function addFamilyMember(
   })
 }
 
-export function deleteFamilyMember(id: string, memberId: string): Promise<void> {
+export function deleteFamilyMember(id: number, memberId: number): Promise<void> {
   return apiClient<void>(`/api/persons/${id}/family/${memberId}`, {
     method: 'DELETE',
   })
 }
 
 export function addEducationRecord(
-  id: string,
+  id: number,
   data: {
     institution: string
     degree: string
@@ -79,14 +79,14 @@ export function addEducationRecord(
   })
 }
 
-export function deleteEducationRecord(id: string, recordId: string): Promise<void> {
+export function deleteEducationRecord(id: number, recordId: number): Promise<void> {
   return apiClient<void>(`/api/persons/${id}/education/${recordId}`, {
     method: 'DELETE',
   })
 }
 
 export function addAppeal(
-  id: string,
+  id: number,
   data: {
     source: Appeal['source']
     category: string
@@ -104,8 +104,8 @@ export function addAppeal(
 }
 
 export function updateAppealStatus(
-  id: string,
-  appealId: string,
+  id: number,
+  appealId: number,
   status: Appeal['status'],
 ): Promise<Appeal> {
   return apiClient<Appeal>(`/api/persons/${id}/appeals/${appealId}`, {
@@ -114,7 +114,7 @@ export function updateAppealStatus(
   })
 }
 
-export function deleteAppeal(id: string, appealId: string): Promise<void> {
+export function deleteAppeal(id: number, appealId: number): Promise<void> {
   return apiClient<void>(`/api/persons/${id}/appeals/${appealId}`, {
     method: 'DELETE',
   })

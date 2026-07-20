@@ -1,6 +1,6 @@
 export interface HousingRecord {
-  id: string
-  personId: string
+  id: number
+  personId: number
   address: string
   type: 'apartment' | 'house' | 'other'
   area: number

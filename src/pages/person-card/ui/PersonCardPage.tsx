@@ -43,12 +43,13 @@ function genderLabel(gender: string): string {
 }
 
 export default function PersonCardPage() {
-  const { id } = useParams<{ id: string }>()
+  const params = useParams<{ id: string }>()
+  const id = Number(params.id)
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const activeTab = searchParams.get('tab') || 'general'
 
-  const { data: person, isLoading, isError, refetch } = usePersonQuery(id!)
+  const { data: person, isLoading, isError, refetch } = usePersonQuery(id)
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: string) => {
     setSearchParams((prev) => {
@@ -116,6 +117,9 @@ export default function PersonCardPage() {
               {person.lastName} {person.firstName} {person.middleName}
             </Typography>
           </Box>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+            {person.registryCode}
+          </Typography>
           <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
             <Typography variant="body1">
               {genderLabel(person.gender)}, {age} лет

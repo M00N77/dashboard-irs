@@ -13,6 +13,9 @@ faker.seed(42)
 
 const COUNT = 5000
 
+let nextPersonId = 1000
+let nextSubId = 1
+
 const regions = [
   'Москва', 'Московская область', 'Санкт-Петербург', 'Ленинградская область',
   'Краснодарский край', 'Республика Татарстан', 'Свердловская область',
@@ -26,10 +29,10 @@ const appealCategories = [
   'запрос информации',
 ]
 
-function generateFamilyMember(personId: string): FamilyMember {
+function generateFamilyMember(personId: number): FamilyMember {
   const gender = faker.helpers.arrayElement(['male', 'female']) as 'male' | 'female'
   return {
-    id: faker.string.uuid(),
+    id: nextSubId++,
     personId,
     relation: faker.helpers.arrayElement(['spouse', 'child', 'parent', 'sibling']),
     firstName: faker.person.firstName(gender === 'male' ? 'male' : 'female'),
@@ -38,10 +41,10 @@ function generateFamilyMember(personId: string): FamilyMember {
   }
 }
 
-function generateEducationRecord(personId: string): EducationRecord {
+function generateEducationRecord(personId: number): EducationRecord {
   const startYear = faker.number.int({ min: 2000, max: 2020 })
   return {
-    id: faker.string.uuid(),
+    id: nextSubId++,
     personId,
     institution: faker.company.name() + ' University',
     degree: faker.helpers.arrayElement(['Bachelor', 'Master', 'PhD', 'Associate']),
@@ -50,11 +53,11 @@ function generateEducationRecord(personId: string): EducationRecord {
   }
 }
 
-function generateEmploymentRecord(personId: string): EmploymentRecord {
+function generateEmploymentRecord(personId: number): EmploymentRecord {
   const startDate = faker.date.past({ years: 20 }).toISOString().split('T')[0]
   const hasEndDate = faker.datatype.boolean(0.4)
   return {
-    id: faker.string.uuid(),
+    id: nextSubId++,
     personId,
     company: faker.company.name(),
     position: faker.person.jobTitle(),
@@ -63,9 +66,9 @@ function generateEmploymentRecord(personId: string): EmploymentRecord {
   }
 }
 
-function generateHousingRecord(personId: string): HousingRecord {
+function generateHousingRecord(personId: number): HousingRecord {
   return {
-    id: faker.string.uuid(),
+    id: nextSubId++,
     personId,
     address: faker.location.streetAddress(true),
     type: faker.helpers.arrayElement(['apartment', 'house', 'other']),
@@ -74,12 +77,12 @@ function generateHousingRecord(personId: string): HousingRecord {
   }
 }
 
-function generateAppeal(personId: string): Appeal {
+function generateAppeal(personId: number): Appeal {
   const registeredAt = faker.date.past({ years: 2 })
   const dueDate = new Date(registeredAt)
   dueDate.setDate(dueDate.getDate() + faker.number.int({ min: 7, max: 60 }))
   return {
-    id: faker.string.uuid(),
+    id: nextSubId++,
     personId,
     source: faker.helpers.arrayElement(['phone', 'email', 'portal', 'paper', 'in-person']) as Appeal['source'],
     category: faker.helpers.arrayElement(appealCategories),
@@ -96,7 +99,7 @@ function generateAppeal(personId: string): Appeal {
 }
 
 function generatePerson(): PersonDetails {
-  const id = faker.string.uuid()
+  const id = nextPersonId++
   const gender = faker.helpers.arrayElement(['male', 'female']) as 'male' | 'female'
   const firstName = faker.person.firstName(gender === 'male' ? 'male' : 'female')
   const lastName = faker.person.lastName()
@@ -117,6 +120,7 @@ function generatePerson(): PersonDetails {
     gender,
     status: faker.helpers.arrayElement(['active', 'archived']),
     region: faker.helpers.arrayElement(regions),
+    registryCode: `REG-2026-${id.toString().padStart(5, '0')}`,
     passportSeries: faker.string.numeric({ length: 4 }),
     passportNumber: faker.string.numeric({ length: 6 }),
     address: faker.location.streetAddress(true),

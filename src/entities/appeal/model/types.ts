@@ -1,6 +1,6 @@
 export interface Appeal {
-  id: string
-  personId: string
+  id: number
+  personId: number
   source: 'phone' | 'email' | 'portal' | 'paper' | 'in-person'
   category: string
   registeredAt: string
