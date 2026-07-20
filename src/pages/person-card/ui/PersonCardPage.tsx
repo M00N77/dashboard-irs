@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
@@ -12,10 +13,11 @@ import Tab from '@mui/material/Tab'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { usePersonQuery } from '@entities/person/model/usePersonQuery'
 import EditPersonGeneral from '@features/edit-person-general/ui/EditPersonGeneral'
-import EditFamily from '@features/edit-family/ui/EditFamily'
-import EditEducation from '@features/edit-education/ui/EditEducation'
-import EditHousing from '@features/edit-housing/ui/EditHousing'
-import EditAppeal from '@features/edit-appeal/ui/EditAppeal'
+
+const EditFamily = lazy(() => import('@features/edit-family/ui/EditFamily'))
+const EditEducation = lazy(() => import('@features/edit-education/ui/EditEducation'))
+const EditHousing = lazy(() => import('@features/edit-housing/ui/EditHousing'))
+const EditAppeal = lazy(() => import('@features/edit-appeal/ui/EditAppeal'))
 
 const TABS = [
   { value: 'general', label: 'Общие сведения' },
@@ -137,11 +139,13 @@ export default function PersonCardPage() {
           </Tabs>
         </Box>
 
-        {activeTab === 'general' && <EditPersonGeneral person={person} />}
-        {activeTab === 'family' && <EditFamily person={person} />}
-        {activeTab === 'education' && <EditEducation person={person} />}
-        {activeTab === 'housing' && <EditHousing person={person} />}
-        {activeTab === 'appeals' && <EditAppeal person={person} />}
+        <Suspense fallback={<Skeleton variant="rectangular" width="100%" height={400} sx={{ mt: 2 }} />}>
+          {activeTab === 'general' && <EditPersonGeneral person={person} />}
+          {activeTab === 'family' && <EditFamily person={person} />}
+          {activeTab === 'education' && <EditEducation person={person} />}
+          {activeTab === 'housing' && <EditHousing person={person} />}
+          {activeTab === 'appeals' && <EditAppeal person={person} />}
+        </Suspense>
       </Box>
     </Container>
   )
