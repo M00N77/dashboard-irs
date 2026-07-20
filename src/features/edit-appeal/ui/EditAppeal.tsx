@@ -8,10 +8,9 @@ import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import DeleteIcon from '@mui/icons-material/Delete'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemText from '@mui/material/ListItemText'
+import Typography from '@mui/material/Typography'
 import Chip from '@mui/material/Chip'
+import Divider from '@mui/material/Divider'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
@@ -21,42 +20,13 @@ import type { PersonDetails } from '@entities/person/model/types'
 import type { Appeal } from '@entities/appeal/model/types'
 import { addAppeal, updateAppealStatus, deleteAppeal } from '@shared/api/persons.api'
 import { appealFormSchema, type AppealFormValues } from '../model/schema'
-
-const SOURCE_LABELS: Record<Appeal['source'], string> = {
-  phone: 'Телефон',
-  email: 'Электронная почта',
-  portal: 'Портал',
-  paper: 'Письменное',
-  'in-person': 'Личный приём',
-}
-
-const STATUS_LABELS: Record<Appeal['status'], string> = {
-  new: 'Новое',
-  'in-progress': 'В работе',
-  resolved: 'Решено',
-  rejected: 'Отклонено',
-  redirected: 'Перенаправлено',
-}
-
-const STATUS_COLORS: Record<Appeal['status'], 'info' | 'warning' | 'success' | 'error' | 'default'> = {
-  new: 'info',
-  'in-progress': 'warning',
-  resolved: 'success',
-  rejected: 'error',
-  redirected: 'default',
-}
-
-const STATUS_OPTIONS = Object.entries(STATUS_LABELS).map(([value, label]) => ({
-  value: value as Appeal['status'],
-  label,
-}))
-
-const CATEGORY_OPTIONS = [
-  'ЖКХ',
-  'обращение по ТКО',
-  'жалоба',
-  'запрос информации',
-]
+import {
+  SOURCE_LABELS,
+  STATUS_LABELS,
+  STATUS_COLORS,
+  STATUS_OPTIONS,
+  CATEGORY_OPTIONS,
+} from '../model/config'
 
 interface Props {
   person: PersonDetails
@@ -127,72 +97,76 @@ export default function EditAppeal({ person }: Props) {
   return (
     <Box>
       <Button variant="contained" onClick={() => setShowForm(true)} sx={{ mb: 2 }}>
-        Добавить обращение
+        Зарегистрировать обращение
       </Button>
 
-      <List>
-        {person.appeals.map((appeal) => (
-          <ListItem
-            key={appeal.id}
-            secondaryAction={
-              <IconButton edge="end" onClick={() => setDeleteTarget(appeal)}>
-                <DeleteIcon />
-              </IconButton>
-            }
+      {person.appeals.length === 0 && (
+        <Typography variant="body2" color="text.secondary" sx={{ py: 2 }}>
+          Нет обращений
+        </Typography>
+      )}
+
+      {person.appeals.map((appeal, idx) => (
+        <Box key={appeal.id}>
+          {idx > 0 && <Divider />}
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: 'minmax(140px, 2fr) minmax(180px, 3fr) 160px 40px',
+              alignItems: 'center',
+              gap: 1,
+              py: 1.5,
+              px: 1,
+            }}
           >
-            <ListItemText
-              primary={
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <span>{appeal.category}</span>
-                  <Chip
-                    label={STATUS_LABELS[appeal.status]}
-                    color={STATUS_COLORS[appeal.status]}
-                    size="small"
-                  />
-                </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0 }}>
+              <Typography variant="body2" noWrap>
+                {appeal.category}
+              </Typography>
+              <Chip
+                label={STATUS_LABELS[appeal.status]}
+                color={STATUS_COLORS[appeal.status]}
+                size="small"
+                sx={{ flexShrink: 0 }}
+              />
+            </Box>
+
+            <Typography variant="body2" color="text.secondary" noWrap>
+              {SOURCE_LABELS[appeal.source]} &middot; {appeal.responsible}
+              &nbsp;&mdash; с {formatDate(appeal.registeredAt)}
+              {appeal.dueDate && <> до {formatDate(appeal.dueDate)}</>}
+            </Typography>
+
+            <TextField
+              select
+              size="small"
+              value={appeal.status}
+              onChange={(e) =>
+                statusMutation.mutate({
+                  appealId: appeal.id,
+                  status: e.target.value as Appeal['status'],
+                })
               }
-              secondary={
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
-                  <span>{SOURCE_LABELS[appeal.source]}</span>
-                  <span>—</span>
-                  <span>{appeal.responsible}</span>
-                  <span>—</span>
-                  <span>с {formatDate(appeal.registeredAt)}</span>
-                  {appeal.dueDate && (
-                    <>
-                      <span>до {formatDate(appeal.dueDate)}</span>
-                    </>
-                  )}
-                  <TextField
-                    select
-                    size="small"
-                    value={appeal.status}
-                    onChange={(e) =>
-                      statusMutation.mutate({
-                        appealId: appeal.id,
-                        status: e.target.value as Appeal['status'],
-                      })
-                    }
-                    sx={{ minWidth: 140, ml: 1 }}
-                    disabled={statusMutation.isPending}
-                  >
-                    {STATUS_OPTIONS.map((opt) => (
-                      <MenuItem key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Box>
-              }
-            />
-          </ListItem>
-        ))}
-        {person.appeals.length === 0 && (
-          <ListItem>
-            <ListItemText primary="Нет записей" />
-          </ListItem>
-        )}
-      </List>
+              sx={{ minWidth: 160, m: 0 }}
+              disabled={statusMutation.isPending}
+            >
+              {STATUS_OPTIONS.map((opt) => (
+                <MenuItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </MenuItem>
+              ))}
+            </TextField>
+
+            <IconButton
+              onClick={() => setDeleteTarget(appeal)}
+              size="small"
+              sx={{ justifySelf: 'end' }}
+            >
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+          </Box>
+        </Box>
+      ))}
 
       <Dialog open={showForm} onClose={() => setShowForm(false)} maxWidth="sm" fullWidth>
         <Box component="form" onSubmit={handleSubmit(onSubmit)}>
