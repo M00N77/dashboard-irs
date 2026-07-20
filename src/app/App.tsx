@@ -2,8 +2,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ThemeProvider } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { theme } from './theme'
+import RegistryPage from '@pages/registry/ui/RegistryPage'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -21,7 +22,8 @@ export default function App() {
         <CssBaseline />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<div>Dashboard IRS</div>} />
+            <Route path="/" element={<Navigate to="/registry" replace />} />
+            <Route path="/registry" element={<RegistryPage />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
