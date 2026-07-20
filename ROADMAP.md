@@ -47,16 +47,16 @@
 
 ### Чеклист
 
-- [ ] Установить `@faker-js/faker`, реализовать offline-генератор с `faker.seed(42)` — 5000 персон
-- [ ] Сгенерировать связанные сущности: `family`, `education`, `employment`, `housing`
-- [ ] Описать типы `PersonSummary` (для списка) и `PersonDetails` (с вложенными связями) — намеренно разделены
-- [ ] Создать `shared/api/client.ts` (инстанс axios/fetch с base URL)
-- [ ] Создать `shared/api/persons.api.ts` (функции `getPersons`, `getPersonById`, `updatePerson`)
-- [ ] Создать `shared/api/stats.api.ts` (функция `getStats`)
-- [ ] Написать MSW-хендлеры: `GET /persons` (пагинация, поиск, фильтр, сортировка на сервере)
-- [ ] Написать MSW-хендлер: `GET /persons/:id`
-- [ ] Написать MSW-хендлер: `GET /stats` (агрегаты считаются в хендлере, не на фронте)
-- [ ] Добавить искусственные задержки (100–800ms) и ~5% случайных ошибок (404/500)
+- [x] Установить `@faker-js/faker`, реализовать offline-генератор с `faker.seed(42)` — 5000 персон
+- [x] Сгенерировать связанные сущности: `family`, `education`, `employment`, `housing`
+- [x] Описать типы `PersonSummary` (для списка) и `PersonDetails` (с вложенными связями) — намеренно разделены
+- [x] Создать `shared/api/client.ts` (инстанс axios/fetch с base URL)
+- [x] Создать `shared/api/persons.api.ts` (функции `getPersons`, `getPersonById`, `updatePerson`)
+- [x] Создать `shared/api/stats.api.ts` (функция `getStats`)
+- [x] Написать MSW-хендлеры: `GET /persons` (пагинация, поиск, фильтр, сортировка на сервере)
+- [x] Написать MSW-хендлер: `GET /persons/:id`
+- [x] Написать MSW-хендлер: `GET /stats` (агрегаты считаются в хендлере, не на фронте)
+- [x] Добавить искусственные задержки (100–800ms) и ~5% случайных ошибок (404/500)
 
 ### Ключевые технические решения
 
