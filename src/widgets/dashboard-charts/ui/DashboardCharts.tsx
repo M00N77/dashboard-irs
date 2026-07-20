@@ -1,10 +1,8 @@
-import { lazy, Suspense } from 'react'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
 import Skeleton from '@mui/material/Skeleton'
 import type { AppealStats, PersonStats } from '@shared/api/stats.api'
-
-const ChartsContent = lazy(() => import('./ChartsContent'))
+import ChartsContent from './ChartsContent'
 
 interface DashboardChartsProps {
   appealStats?: AppealStats
@@ -38,23 +36,5 @@ export default function DashboardCharts({ appealStats, personStats, loading }: D
     )
   }
 
-  return (
-    <Suspense
-      fallback={
-        <Grid container spacing={3}>
-          <Grid size={{ xs: 12, sm: 12, md: 4 }}>
-            <ChartSkeleton />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 12, md: 4 }}>
-            <ChartSkeleton />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 12, md: 4 }}>
-            <ChartSkeleton />
-          </Grid>
-        </Grid>
-      }
-    >
-      <ChartsContent appealStats={appealStats} personStats={personStats} />
-    </Suspense>
-  )
+  return <ChartsContent appealStats={appealStats} personStats={personStats} />
 }
