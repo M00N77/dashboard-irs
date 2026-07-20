@@ -1,5 +1,7 @@
 # IRS Dashboard (Individual Registration System)
 
+[![Deploy](https://img.shields.io/badge/Deploy-Vercel-000?logo=vercel)](https://dashboard-irs.vercel.app)
+
 Современная веб-платформа для управления обращениями и учёта данных граждан, разработанная на основе анализа портала ППК РЭО. Проект трансформирует концепцию тяжёлых корпоративных СЭД в быстрый, адаптивный SPA с фокусом на UX и производительность.
 
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
@@ -8,7 +10,6 @@
 ![MUI](https://img.shields.io/badge/MUI-9-007FFF?logo=mui)
 ![MSW](https://img.shields.io/badge/MSW-2-FF6A33)
 ![TanStack Query](https://img.shields.io/badge/TanStack_Query-5-FF4154?logo=reactquery)
-[![Deploy](https://img.shields.io/badge/Deploy-Vercel-000?logo=vercel)](https://github.com/M00N77/dashboard-irs)
 
 ---
 
@@ -125,7 +126,7 @@ npm run generate:mock
 
 ### Деплой
 
-> Вставь ссылку на продакшен: `https://dashboard-irs.vercel.app` или свой URL.
+Приложение на Vercel: [dashboard-irs.vercel.app](https://dashboard-irs.vercel.app)
 
 ---
 
@@ -167,7 +168,7 @@ npm run generate:mock
 
 ### Интерфейс
 
-![](https://raw.githubusercontent.com/M00N77/dashboard-irs/main/public/preview/1.png)
-![](https://raw.githubusercontent.com/M00N77/dashboard-irs/main/public/preview/2.png)
-![](https://raw.githubusercontent.com/M00N77/dashboard-irs/main/public/preview/3.png)
-![](https://raw.githubusercontent.com/M00N77/dashboard-irs/main/public/preview/4.png)
+![](https://dashboard-irs.vercel.app/preview/1.png)
+![](https://dashboard-irs.vercel.app/preview/2.png)
+![](https://dashboard-irs.vercel.app/preview/3.png)
+![](https://dashboard-irs.vercel.app/preview/4.png)

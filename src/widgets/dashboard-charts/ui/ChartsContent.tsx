@@ -15,7 +15,6 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts'
-import type { PieLabelRenderProps } from 'recharts'
 import type { AppealStats, PersonStats } from '@shared/api/stats.api'
 
 interface ChartsContentProps {
@@ -88,9 +87,6 @@ export default function ChartsContent({ appealStats, personStats }: ChartsConten
                 innerRadius="30%"
                 outerRadius="75%"
                 dataKey="value"
-                label={({ name, percent }: PieLabelRenderProps) =>
-                  `${name} ${((percent ?? 0) * 100).toFixed(0)}%`
-                }
               >
                 {statusData.map((entry) => (
                   <Cell key={entry.name} fill={entry.color} />
