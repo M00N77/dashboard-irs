@@ -116,37 +116,62 @@ export const handlers = [
     await randomDelay()
 
     const allPersons = await getCachedPersons()
+
     const totalPersons = allPersons.length
     const male = allPersons.filter((p) => p.gender === 'male').length
     const female = allPersons.filter((p) => p.gender === 'female').length
-    const employed = allPersons.filter((p) =>
-      p.employment.some((e) => e.endDate === null),
-    ).length
-    const unemployed = totalPersons - employed
 
-    const byRegion: Record<string, number> = {}
-    for (const p of allPersons) {
-      byRegion[p.region] = (byRegion[p.region] || 0) + 1
-    }
-
-    const byAgeGroup: Record<string, number> = {}
     const now = new Date()
+    const ageGroups: Record<string, number> = {}
     for (const p of allPersons) {
       const birth = new Date(p.birthDate)
       const age = now.getFullYear() - birth.getFullYear()
       const group =
         age < 18 ? 'under 18' : age <= 30 ? '18-30' : age <= 45 ? '30-45' : age <= 60 ? '45-60' : '60+'
-      byAgeGroup[group] = (byAgeGroup[group] || 0) + 1
+      ageGroups[group] = (ageGroups[group] || 0) + 1
+    }
+
+    const CATEGORY_KEY_MAP: Record<string, string> = {
+      'Обращение по ТКО': 'tko',
+      'ЖКХ': 'jkh',
+      'Жалоба': 'complaint',
+      'Запрос информации': 'info',
+      'Иное': 'other',
+    }
+
+    let totalAppeals = 0
+    const byStatus: Record<string, number> = {}
+    const byCategory: Record<string, number> = {}
+    const activePersonIds = new Set<string>()
+
+    for (const p of allPersons) {
+      for (const a of p.appeals) {
+        totalAppeals++
+        byStatus[a.status] = (byStatus[a.status] || 0) + 1
+
+        const catKey = CATEGORY_KEY_MAP[a.category] || 'other'
+        byCategory[catKey] = (byCategory[catKey] || 0) + 1
+
+        if (a.status === 'new' || a.status === 'in-progress') {
+          activePersonIds.add(p.id)
+        }
+      }
     }
 
     return HttpResponse.json({
-      totalPersons,
-      male,
-      female,
-      employed,
-      unemployed,
-      byRegion,
-      byAgeGroup,
+      summary: {
+        totalPersons,
+        totalAppeals,
+        activePersons: activePersonIds.size,
+      },
+      personStats: {
+        genderDistribution: { male, female },
+        ageGroups,
+      },
+      appealStats: {
+        byStatus,
+        byCategory,
+      },
     })
   }),
 
