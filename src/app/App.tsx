@@ -4,6 +4,8 @@ import { ThemeProvider } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { theme } from './theme'
+import AppLayout from '@widgets/layout/ui/AppLayout'
+import DashboardPage from '@pages/dashboard/ui/DashboardPage'
 import RegistryPage from '@pages/registry/ui/RegistryPage'
 import PersonCardPage from '@pages/person-card/ui/PersonCardPage'
 
@@ -23,9 +25,12 @@ export default function App() {
         <CssBaseline />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Navigate to="/registry" replace />} />
-            <Route path="/registry" element={<RegistryPage />} />
-            <Route path="/registry/:id" element={<PersonCardPage />} />
+            <Route element={<AppLayout />}>
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/registry" element={<RegistryPage />} />
+              <Route path="/registry/:id" element={<PersonCardPage />} />
+            </Route>
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
