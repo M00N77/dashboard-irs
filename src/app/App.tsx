@@ -27,7 +27,7 @@ export default function App() {
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
+      <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
     </QueryClientProvider>
   )
 }
