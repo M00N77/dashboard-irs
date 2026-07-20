@@ -173,8 +173,11 @@ export const handlers = [
     const body = (await request.json()) as Record<string, unknown>
     const id = parseInt(params.id as string, 10)
     const idx = findPersonIndex(id)
-    if (idx !== null && personsCache) {
-      personsCache[idx] = { ...personsCache[idx], ...body } as PersonDetails
+    if (idx !== null) {
+      const persons = getCachedPersonsSync()
+      if (persons) {
+        persons[idx] = { ...persons[idx], ...body } as PersonDetails
+      }
     }
     invalidateStatsCache()
     return HttpResponse.json({ id, ...body })
@@ -186,8 +189,11 @@ export const handlers = [
     const personId = parseInt(params.id as string, 10)
     const newMember = { id: Date.now(), personId, ...body }
     const idx = findPersonIndex(personId)
-    if (idx !== null && personsCache) {
-      personsCache[idx].family.push(newMember as never)
+    if (idx !== null) {
+      const persons = getCachedPersonsSync()
+      if (persons) {
+        persons[idx].family.push(newMember as never)
+      }
     }
     return HttpResponse.json(newMember, { status: 201 })
   }),
@@ -197,10 +203,13 @@ export const handlers = [
     const id = parseInt(params.id as string, 10)
     const memberId = parseInt(params.memberId as string, 10)
     const idx = findPersonIndex(id)
-    if (idx !== null && personsCache) {
-      personsCache[idx].family = personsCache[idx].family.filter(
-        (m) => m.id !== memberId,
-      )
+    if (idx !== null) {
+      const persons = getCachedPersonsSync()
+      if (persons) {
+        persons[idx].family = persons[idx].family.filter(
+          (m: { id: number }) => m.id !== memberId,
+        )
+      }
     }
     return HttpResponse.json(null, { status: 204 })
   }),
@@ -211,8 +220,11 @@ export const handlers = [
     const personId = parseInt(params.id as string, 10)
     const newRecord = { id: Date.now(), personId, ...body }
     const idx = findPersonIndex(personId)
-    if (idx !== null && personsCache) {
-      personsCache[idx].education.push(newRecord as never)
+    if (idx !== null) {
+      const persons = getCachedPersonsSync()
+      if (persons) {
+        persons[idx].education.push(newRecord as never)
+      }
     }
     return HttpResponse.json(newRecord, { status: 201 })
   }),
@@ -222,10 +234,13 @@ export const handlers = [
     const id = parseInt(params.id as string, 10)
     const recordId = parseInt(params.recordId as string, 10)
     const idx = findPersonIndex(id)
-    if (idx !== null && personsCache) {
-      personsCache[idx].education = personsCache[idx].education.filter(
-        (r) => r.id !== recordId,
-      )
+    if (idx !== null) {
+      const persons = getCachedPersonsSync()
+      if (persons) {
+        persons[idx].education = persons[idx].education.filter(
+          (r: { id: number }) => r.id !== recordId,
+        )
+      }
     }
     return HttpResponse.json(null, { status: 204 })
   }),
@@ -249,8 +264,11 @@ export const handlers = [
       attachments: [],
     }
     const idx = findPersonIndex(personId)
-    if (idx !== null && personsCache) {
-      personsCache[idx].appeals.push(newAppeal)
+    if (idx !== null) {
+      const persons = getCachedPersonsSync()
+      if (persons) {
+        persons[idx].appeals.push(newAppeal)
+      }
     }
     invalidateStatsCache()
     return HttpResponse.json(newAppeal, { status: 201 })
@@ -262,14 +280,17 @@ export const handlers = [
     const id = parseInt(params.id as string, 10)
     const appealId = parseInt(params.appealId as string, 10)
     const idx = findPersonIndex(id)
-    if (idx !== null && personsCache) {
-      const appeal = personsCache[idx].appeals.find((a) => a.id === appealId)
-      if (appeal) {
-        appeal.status = body.status
-        invalidateStatsCache()
-        return HttpResponse.json(appeal)
+    if (idx !== null) {
+      const persons = getCachedPersonsSync()
+      if (persons) {
+        const appeal = persons[idx].appeals.find((a: { id: number }) => a.id === appealId)
+        if (appeal) {
+          appeal.status = body.status
+          invalidateStatsCache()
+          return HttpResponse.json(appeal)
+        }
+        return HttpResponse.json({ error: 'Appeal Not Found' }, { status: 404 })
       }
-      return HttpResponse.json({ error: 'Appeal Not Found' }, { status: 404 })
     }
     return HttpResponse.json({ id: appealId, ...body })
   }),
@@ -279,10 +300,13 @@ export const handlers = [
     const id = parseInt(params.id as string, 10)
     const appealId = parseInt(params.appealId as string, 10)
     const idx = findPersonIndex(id)
-    if (idx !== null && personsCache) {
-      personsCache[idx].appeals = personsCache[idx].appeals.filter(
-        (a) => a.id !== appealId,
-      )
+    if (idx !== null) {
+      const persons = getCachedPersonsSync()
+      if (persons) {
+        persons[idx].appeals = persons[idx].appeals.filter(
+          (a: { id: number }) => a.id !== appealId,
+        )
+      }
     }
     invalidateStatsCache()
     return HttpResponse.json(null, { status: 204 })

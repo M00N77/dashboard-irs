@@ -66,7 +66,11 @@ export default function PersonCardPage() {
           <Box sx={{ minHeight: 64, display: 'flex', alignItems: 'center' }}>
             <Skeleton variant="rectangular" width={200} height={40} />
           </Box>
-          <Skeleton variant="rectangular" width="100%" height={140} sx={{ mt: 2 }} />
+          <Paper sx={{ p: 3, mb: 3 }}>
+            <Skeleton variant="rectangular" width="60%" height={32} sx={{ bgcolor: 'grey.300', mb: 1 }} />
+            <Skeleton variant="rectangular" width="40%" height={20} sx={{ bgcolor: 'grey.300', mb: 1 }} />
+            <Skeleton variant="rectangular" width="30%" height={24} sx={{ bgcolor: 'grey.300' }} />
+          </Paper>
           <Skeleton variant="rectangular" width="100%" height={48} sx={{ mt: 2 }} />
           <Skeleton variant="rectangular" width="100%" height={400} sx={{ mt: 2 }} />
         </Box>
@@ -113,7 +117,7 @@ export default function PersonCardPage() {
 
         <Paper sx={{ p: 3, mb: 3 }}>
           <Box sx={{ minHeight: 64, display: 'flex', alignItems: 'center' }}>
-            <Typography variant="h4" sx={{ lineHeight: 1.2 }}>
+            <Typography variant="h5" sx={{ lineHeight: 1.2 }}>
               {person.lastName} {person.firstName} {person.middleName}
             </Typography>
           </Box>
