@@ -1,0 +1,116 @@
+import { faker } from '@faker-js/faker'
+import { writeFileSync, existsSync, mkdirSync } from 'fs'
+import { join, dirname } from 'path'
+import { fileURLToPath } from 'url'
+import type { PersonDetails } from '../src/entities/person/model/types'
+import type { FamilyMember } from '../src/entities/family/model/types'
+import type { EducationRecord } from '../src/entities/education/model/types'
+import type { EmploymentRecord } from '../src/entities/employment/model/types'
+import type { HousingRecord } from '../src/entities/housing/model/types'
+
+faker.seed(42)
+
+const COUNT = 5000
+
+const regions = [
+  'Москва', 'Московская область', 'Санкт-Петербург', 'Ленинградская область',
+  'Краснодарский край', 'Республика Татарстан', 'Свердловская область',
+  'Ростовская область', 'Республика Башкортостан', 'Новосибирская область',
+]
+
+function generateFamilyMember(personId: string): FamilyMember {
+  const gender = faker.helpers.arrayElement(['male', 'female']) as 'male' | 'female'
+  return {
+    id: faker.string.uuid(),
+    personId,
+    relation: faker.helpers.arrayElement(['spouse', 'child', 'parent', 'sibling']),
+    firstName: faker.person.firstName(gender === 'male' ? 'male' : 'female'),
+    lastName: faker.person.lastName(),
+    birthDate: faker.date.birthdate({ min: 1, max: 80, mode: 'age' }).toISOString().split('T')[0],
+  }
+}
+
+function generateEducationRecord(personId: string): EducationRecord {
+  const startYear = faker.number.int({ min: 2000, max: 2020 })
+  return {
+    id: faker.string.uuid(),
+    personId,
+    institution: faker.company.name() + ' University',
+    degree: faker.helpers.arrayElement(['Bachelor', 'Master', 'PhD', 'Associate']),
+    startYear,
+    endYear: startYear + faker.number.int({ min: 2, max: 6 }),
+  }
+}
+
+function generateEmploymentRecord(personId: string): EmploymentRecord {
+  const startDate = faker.date.past({ years: 20 }).toISOString().split('T')[0]
+  const hasEndDate = faker.datatype.boolean(0.4)
+  return {
+    id: faker.string.uuid(),
+    personId,
+    company: faker.company.name(),
+    position: faker.person.jobTitle(),
+    startDate,
+    endDate: hasEndDate ? faker.date.between({ from: startDate, to: new Date() }).toISOString().split('T')[0] : null,
+  }
+}
+
+function generateHousingRecord(personId: string): HousingRecord {
+  return {
+    id: faker.string.uuid(),
+    personId,
+    address: faker.location.streetAddress(true),
+    type: faker.helpers.arrayElement(['apartment', 'house', 'other']),
+    area: faker.number.float({ min: 20, max: 200, fractionDigits: 1 }),
+    ownershipType: faker.helpers.arrayElement(['owned', 'rented', 'social']),
+  }
+}
+
+function generatePerson(): PersonDetails {
+  const id = faker.string.uuid()
+  const gender = faker.helpers.arrayElement(['male', 'female']) as 'male' | 'female'
+  const firstName = faker.person.firstName(gender === 'male' ? 'male' : 'female')
+  const lastName = faker.person.lastName()
+  const middleName = faker.person.middleName(gender === 'male' ? 'male' : 'female')
+  const birthDate = faker.date.birthdate({ min: 18, max: 90, mode: 'age' }).toISOString().split('T')[0]
+
+  const familyCount = faker.number.int({ min: 0, max: 4 })
+  const educationCount = faker.number.int({ min: 1, max: 3 })
+  const employmentCount = faker.number.int({ min: 0, max: 2 })
+
+  return {
+    id,
+    firstName,
+    lastName,
+    middleName,
+    birthDate,
+    gender,
+    status: faker.helpers.arrayElement(['active', 'archived']),
+    region: faker.helpers.arrayElement(regions),
+    passportSeries: faker.string.numeric({ length: 4 }),
+    passportNumber: faker.string.numeric({ length: 6 }),
+    address: faker.location.streetAddress(true),
+    phone: faker.phone.number(),
+    email: faker.internet.email({ firstName, lastName }),
+    family: Array.from({ length: familyCount }, () => generateFamilyMember(id)),
+    education: Array.from({ length: educationCount }, () => generateEducationRecord(id)),
+    employment: Array.from({ length: employmentCount }, () => generateEmploymentRecord(id)),
+    housing: [generateHousingRecord(id)],
+  }
+}
+
+const persons: PersonDetails[] = Array.from({ length: COUNT }, () => generatePerson())
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const dir = join(__dirname, '..', 'public', 'mock-data')
+if (!existsSync(dir)) {
+  mkdirSync(dir, { recursive: true })
+}
+
+const filePath = join(dir, 'persons.json')
+const json = JSON.stringify(persons)
+writeFileSync(filePath, json, 'utf-8')
+
+const sizeMB = (Buffer.byteLength(json, 'utf-8') / (1024 * 1024)).toFixed(2)
+console.log(`Generated ${persons.length} records → ${filePath}`)
+console.log(`File size: ${sizeMB} MB`)
