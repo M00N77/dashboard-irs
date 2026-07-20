@@ -50,7 +50,7 @@ export default function EditHousing({ person }: Props) {
 
   const mutation = useMutation({
     mutationFn: (data: HousingRecordFormValues) =>
-      updatePerson(person.id, { ...person, housing: [{ ...housing!, ...data }] }),
+      updatePerson(person.id, { housing: [{ ...housing!, ...data }] }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['person', person.id] })
       setIsEditing(false)
