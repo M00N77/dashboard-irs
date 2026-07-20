@@ -24,9 +24,9 @@ const regions = [
 
 const appealCategories = [
   'ЖКХ',
-  'обращение по ТКО',
-  'жалоба',
-  'запрос информации',
+  'Обращение по ТКО',
+  'Жалоба',
+  'Запрос информации',
 ]
 
 function generateFamilyMember(personId: number): FamilyMember {
