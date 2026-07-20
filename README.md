@@ -8,6 +8,7 @@
 ![MUI](https://img.shields.io/badge/MUI-9-007FFF?logo=mui)
 ![MSW](https://img.shields.io/badge/MSW-2-FF6A33)
 ![TanStack Query](https://img.shields.io/badge/TanStack_Query-5-FF4154?logo=reactquery)
+[![Deploy](https://img.shields.io/badge/Deploy-Vercel-000?logo=vercel)]()
 
 ---
 
@@ -121,6 +122,10 @@ npm run generate:mock
 ```
 
 Приложение запустится на `http://localhost:5173` и сразу будет доступно с мок-данными (MSW запускается автоматически в dev-режиме).
+
+### Деплой
+
+> Вставь ссылку на продакшен: `https://dashboard-irs.vercel.app` или свой URL.
 
 ---
 
