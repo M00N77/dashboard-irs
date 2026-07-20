@@ -5,6 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { theme } from './theme'
 import RegistryPage from '@pages/registry/ui/RegistryPage'
+import PersonCardPage from '@pages/person-card/ui/PersonCardPage'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,6 +25,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Navigate to="/registry" replace />} />
             <Route path="/registry" element={<RegistryPage />} />
+            <Route path="/registry/:id" element={<PersonCardPage />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
