@@ -42,7 +42,7 @@ export default function DashboardMetrics({ data, loading }: DashboardMetricsProp
                     {card.label}
                   </Typography>
                   {loading ? (
-                    <Skeleton variant="rectangular" width={60} height={40} />
+                    <Skeleton variant="text" sx={{ fontSize: '2.125rem', lineHeight: 1.2, width: '100%', maxWidth: 120 }} />
                   ) : (
                     <Typography variant="h4" sx={{ fontWeight: 'bold', lineHeight: 1.2 }}>
                       {data?.[card.field] ?? '—'}
