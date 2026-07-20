@@ -102,18 +102,18 @@ export default function DashboardCharts({ appealStats, personStats, loading }: D
   return (
     <Grid container spacing={3}>
       <Grid size={{ xs: 12, sm: 12, md: 4 }}>
-        <Paper sx={{ p: 3, height: '100%', minHeight: 400 }}>
+        <Paper sx={{ p: 3, height: '100%', minHeight: 400, width: '100%', overflow: 'hidden' }}>
           <Typography variant="h6" gutterBottom>
             Статусы обращений
           </Typography>
-          <ResponsiveContainer width="100%" height={330}>
-            <PieChart margin={{ top: 20, right: 30, bottom: 20, left: 30 }}>
+          <ResponsiveContainer width="100%" height={320}>
+            <PieChart>
               <Pie
                 data={statusData}
                 cx="50%"
                 cy="50%"
-                innerRadius={50}
-                outerRadius={100}
+                innerRadius="30%"
+                outerRadius="75%"
                 dataKey="value"
                 label={({ name, percent }: PieLabelRenderProps) =>
                   `${name} ${((percent ?? 0) * 100).toFixed(0)}%`
@@ -131,15 +131,15 @@ export default function DashboardCharts({ appealStats, personStats, loading }: D
       </Grid>
 
       <Grid size={{ xs: 12, sm: 12, md: 4 }}>
-        <Paper sx={{ p: 3, height: '100%', minHeight: 400 }}>
+        <Paper sx={{ p: 3, height: '100%', minHeight: 400, width: '100%', overflow: 'hidden' }}>
           <Typography variant="h6" gutterBottom>
             Категории обращений
           </Typography>
-          <ResponsiveContainer width="100%" height={330}>
-            <BarChart data={categoryData} margin={{ bottom: 80 }}>
+          <ResponsiveContainer width="100%" height={320}>
+            <BarChart data={categoryData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" angle={-45} textAnchor="end" />
-              <YAxis />
+              <XAxis dataKey="name" angle={-45} textAnchor="end" tick={{ fontSize: 12 }} />
+              <YAxis tick={{ fontSize: 12 }} />
               <Tooltip />
               <Bar dataKey="value" fill={theme.palette.primary.main} />
             </BarChart>
@@ -148,15 +148,15 @@ export default function DashboardCharts({ appealStats, personStats, loading }: D
       </Grid>
 
       <Grid size={{ xs: 12, sm: 12, md: 4 }}>
-        <Paper sx={{ p: 3, height: '100%', minHeight: 400 }}>
+        <Paper sx={{ p: 3, height: '100%', minHeight: 400, width: '100%', overflow: 'hidden' }}>
           <Typography variant="h6" gutterBottom>
             Возрастные группы
           </Typography>
-          <ResponsiveContainer width="100%" height={330}>
-            <BarChart data={ageData} margin={{ bottom: 20 }}>
+          <ResponsiveContainer width="100%" height={320}>
+            <BarChart data={ageData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
+              <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+              <YAxis tick={{ fontSize: 12 }} />
               <Tooltip />
               <Bar dataKey="value" fill={theme.palette.success.main} />
             </BarChart>
