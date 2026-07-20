@@ -13,7 +13,7 @@ export default function DashboardPage() {
 
   return (
     <Box>
-      <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold' }}>
+      <Typography variant="h4" sx={{ fontWeight: 'bold', lineHeight: 1.2, mb: 2 }}>
         Аналитический дашборд
       </Typography>
 

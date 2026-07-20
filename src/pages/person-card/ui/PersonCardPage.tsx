@@ -60,8 +60,10 @@ export default function PersonCardPage() {
     return (
       <Container maxWidth="xl">
         <Box sx={{ py: 3 }}>
-          <Skeleton variant="text" width={200} height={40} />
-          <Skeleton variant="rectangular" width="100%" height={180} sx={{ mt: 2 }} />
+          <Box sx={{ minHeight: 64, display: 'flex', alignItems: 'center' }}>
+            <Skeleton variant="rectangular" width={200} height={40} />
+          </Box>
+          <Skeleton variant="rectangular" width="100%" height={140} sx={{ mt: 2 }} />
           <Skeleton variant="rectangular" width="100%" height={48} sx={{ mt: 2 }} />
           <Skeleton variant="rectangular" width="100%" height={400} sx={{ mt: 2 }} />
         </Box>
@@ -107,9 +109,11 @@ export default function PersonCardPage() {
         </Button>
 
         <Paper sx={{ p: 3, mb: 3 }}>
-          <Typography variant="h4" sx={{ mb: 1 }}>
-            {person.lastName} {person.firstName} {person.middleName}
-          </Typography>
+          <Box sx={{ minHeight: 64, display: 'flex', alignItems: 'center' }}>
+            <Typography variant="h4" sx={{ lineHeight: 1.2 }}>
+              {person.lastName} {person.firstName} {person.middleName}
+            </Typography>
+          </Box>
           <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
             <Typography variant="body1">
               {genderLabel(person.gender)}, {age} лет

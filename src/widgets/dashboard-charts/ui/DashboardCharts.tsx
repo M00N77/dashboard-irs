@@ -43,9 +43,9 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 function ChartSkeleton() {
   return (
-    <Paper sx={{ p: 3, height: '100%', minHeight: 360, display: 'flex', flexDirection: 'column' }}>
+    <Paper sx={{ p: 3, height: '100%', minHeight: 400, display: 'flex', flexDirection: 'column' }}>
       <Skeleton width="40%" height={32} sx={{ mb: 2 }} />
-      <Skeleton variant="rectangular" sx={{ flex: 1, minHeight: 260 }} />
+      <Skeleton variant="rectangular" sx={{ flex: 1, minHeight: 300 }} />
     </Paper>
   )
 }
@@ -103,7 +103,7 @@ export default function DashboardCharts({ appealStats, personStats, loading }: D
     <Grid container spacing={3}>
       <Grid size={{ xs: 12, sm: 12, md: 4 }}>
         <Paper sx={{ p: 3, height: '100%', minHeight: 400, width: '100%', overflow: 'hidden' }}>
-          <Typography variant="h6" gutterBottom>
+          <Typography variant="h6" sx={{ lineHeight: 1.3, mb: 2 }}>
             Статусы обращений
           </Typography>
           <ResponsiveContainer width="100%" height={320}>
@@ -132,7 +132,7 @@ export default function DashboardCharts({ appealStats, personStats, loading }: D
 
       <Grid size={{ xs: 12, sm: 12, md: 4 }}>
         <Paper sx={{ p: 3, height: '100%', minHeight: 400, width: '100%', overflow: 'hidden' }}>
-          <Typography variant="h6" gutterBottom>
+          <Typography variant="h6" sx={{ lineHeight: 1.3, mb: 2 }}>
             Категории обращений
           </Typography>
           <ResponsiveContainer width="100%" height={320}>
@@ -149,7 +149,7 @@ export default function DashboardCharts({ appealStats, personStats, loading }: D
 
       <Grid size={{ xs: 12, sm: 12, md: 4 }}>
         <Paper sx={{ p: 3, height: '100%', minHeight: 400, width: '100%', overflow: 'hidden' }}>
-          <Typography variant="h6" gutterBottom>
+          <Typography variant="h6" sx={{ lineHeight: 1.3, mb: 2 }}>
             Возрастные группы
           </Typography>
           <ResponsiveContainer width="100%" height={320}>
