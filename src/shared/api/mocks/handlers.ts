@@ -1,9 +1,60 @@
 import { http, HttpResponse, delay } from 'msw'
 import type { PersonDetails, PersonSummary } from '@entities/person/model/types'
 import type { Appeal } from '@entities/appeal/model/types'
+import type { StatsResponse } from '@shared/api/stats.api'
 
 let personsCache: PersonDetails[] | null = null
 let loadPromise: Promise<PersonDetails[]> | null = null
+let cachedStats: StatsResponse | null = null
+
+function buildStats(persons: PersonDetails[]): StatsResponse {
+  const totalPersons = persons.length
+  const male = persons.filter((p) => p.gender === 'male').length
+  const female = persons.filter((p) => p.gender === 'female').length
+
+  const now = new Date()
+  const ageGroups: Record<string, number> = {}
+  for (const p of persons) {
+    const birth = new Date(p.birthDate)
+    const age = now.getFullYear() - birth.getFullYear()
+    const group =
+      age < 18 ? 'under 18' : age <= 30 ? '18-30' : age <= 45 ? '30-45' : age <= 60 ? '45-60' : '60+'
+    ageGroups[group] = (ageGroups[group] || 0) + 1
+  }
+
+  const CATEGORY_KEY_MAP: Record<string, string> = {
+    'Обращение по ТКО': 'tko',
+    'ЖКХ': 'jkh',
+    'Жалоба': 'complaint',
+    'Запрос информации': 'info',
+    'Иное': 'other',
+  }
+
+  let totalAppeals = 0
+  const byStatus: Record<string, number> = {}
+  const byCategory: Record<string, number> = {}
+  const activePersonIds = new Set<number>()
+
+  for (const p of persons) {
+    for (const a of p.appeals) {
+      totalAppeals++
+      byStatus[a.status] = (byStatus[a.status] || 0) + 1
+
+      const catKey = CATEGORY_KEY_MAP[a.category] || 'other'
+      byCategory[catKey] = (byCategory[catKey] || 0) + 1
+
+      if (a.status === 'new' || a.status === 'in-progress') {
+        activePersonIds.add(p.id)
+      }
+    }
+  }
+
+  return {
+    summary: { totalPersons, totalAppeals, activePersons: activePersonIds.size },
+    personStats: { genderDistribution: { male, female }, ageGroups },
+    appealStats: { byStatus, byCategory },
+  }
+}
 
 async function getCachedPersons(): Promise<PersonDetails[]> {
   if (personsCache) return personsCache
@@ -16,10 +67,19 @@ async function getCachedPersons(): Promise<PersonDetails[]> {
     })
     .then((data) => {
       personsCache = data
+      cachedStats = buildStats(data)
       return data
     })
 
   return loadPromise
+}
+
+function invalidateStatsCache(): void {
+  if (personsCache) {
+    cachedStats = buildStats(personsCache)
+  } else {
+    cachedStats = null
+  }
 }
 
 function findPersonIndex(id: number): number | null {
@@ -114,66 +174,8 @@ export const handlers = [
   }),
 
   http.get('/api/stats', async () => {
-    await randomDelay()
-
-    const allPersons = await getCachedPersons()
-
-    const totalPersons = allPersons.length
-    const male = allPersons.filter((p) => p.gender === 'male').length
-    const female = allPersons.filter((p) => p.gender === 'female').length
-
-    const now = new Date()
-    const ageGroups: Record<string, number> = {}
-    for (const p of allPersons) {
-      const birth = new Date(p.birthDate)
-      const age = now.getFullYear() - birth.getFullYear()
-      const group =
-        age < 18 ? 'under 18' : age <= 30 ? '18-30' : age <= 45 ? '30-45' : age <= 60 ? '45-60' : '60+'
-      ageGroups[group] = (ageGroups[group] || 0) + 1
-    }
-
-    const CATEGORY_KEY_MAP: Record<string, string> = {
-      'Обращение по ТКО': 'tko',
-      'ЖКХ': 'jkh',
-      'Жалоба': 'complaint',
-      'Запрос информации': 'info',
-      'Иное': 'other',
-    }
-
-    let totalAppeals = 0
-    const byStatus: Record<string, number> = {}
-    const byCategory: Record<string, number> = {}
-    const activePersonIds = new Set<number>()
-
-    for (const p of allPersons) {
-      for (const a of p.appeals) {
-        totalAppeals++
-        byStatus[a.status] = (byStatus[a.status] || 0) + 1
-
-        const catKey = CATEGORY_KEY_MAP[a.category] || 'other'
-        byCategory[catKey] = (byCategory[catKey] || 0) + 1
-
-        if (a.status === 'new' || a.status === 'in-progress') {
-          activePersonIds.add(p.id)
-        }
-      }
-    }
-
-    return HttpResponse.json({
-      summary: {
-        totalPersons,
-        totalAppeals,
-        activePersons: activePersonIds.size,
-      },
-      personStats: {
-        genderDistribution: { male, female },
-        ageGroups,
-      },
-      appealStats: {
-        byStatus,
-        byCategory,
-      },
-    })
+    await getCachedPersons()
+    return HttpResponse.json(cachedStats!)
   }),
 
   // Mutation handlers — these update the in-memory cache but do NOT persist to disk.
@@ -188,6 +190,7 @@ export const handlers = [
     if (idx !== null && personsCache) {
       personsCache[idx] = { ...personsCache[idx], ...body } as PersonDetails
     }
+    invalidateStatsCache()
     return HttpResponse.json({ id, ...body })
   }),
 
@@ -263,6 +266,7 @@ export const handlers = [
     if (idx !== null && personsCache) {
       personsCache[idx].appeals.push(newAppeal)
     }
+    invalidateStatsCache()
     return HttpResponse.json(newAppeal, { status: 201 })
   }),
 
@@ -276,6 +280,7 @@ export const handlers = [
       const appeal = personsCache[idx].appeals.find((a) => a.id === appealId)
       if (appeal) {
         appeal.status = body.status
+        invalidateStatsCache()
         return HttpResponse.json(appeal)
       }
       return HttpResponse.json({ error: 'Appeal Not Found' }, { status: 404 })
@@ -293,6 +298,7 @@ export const handlers = [
         (a) => a.id !== appealId,
       )
     }
+    invalidateStatsCache()
     return HttpResponse.json(null, { status: 204 })
   }),
 ]
