@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
@@ -5,6 +6,7 @@ import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
+import CircularProgress from '@mui/material/CircularProgress'
 
 export default function AppLayout() {
   const navigate = useNavigate()
@@ -38,7 +40,13 @@ export default function AppLayout() {
         </Toolbar>
       </AppBar>
       <Container maxWidth="xl" sx={{ py: 3, flex: 1 }}>
-        <Outlet />
+        <Suspense fallback={
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
+            <CircularProgress />
+          </Box>
+        }>
+          <Outlet />
+        </Suspense>
       </Container>
     </Box>
   )
