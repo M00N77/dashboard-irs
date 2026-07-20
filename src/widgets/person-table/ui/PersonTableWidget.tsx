@@ -8,11 +8,12 @@ import {
 } from '@tanstack/react-table'
 import type { SortingState } from '@tanstack/react-table'
 import Table from '@mui/material/Table'
-import TableHead from '@mui/material/TableHead'
 import TableBody from '@mui/material/TableBody'
-import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
 import TablePagination from '@mui/material/TablePagination'
+import TableRow from '@mui/material/TableRow'
 import TableSortLabel from '@mui/material/TableSortLabel'
 import Typography from '@mui/material/Typography'
 import LinearProgress from '@mui/material/LinearProgress'
@@ -125,6 +126,7 @@ export default function PersonTableWidget() {
         </Alert>
       )}
 
+      <TableContainer sx={{ overflowX: 'auto', width: '100%' }}>
       <Table>
         <TableHead>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -166,6 +168,7 @@ export default function PersonTableWidget() {
           ))}
         </TableBody>
       </Table>
+      </TableContainer>
 
       <TablePagination
         component="div"

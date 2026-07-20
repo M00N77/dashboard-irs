@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
@@ -51,14 +51,14 @@ export default function PersonFilters() {
   }
 
   return (
-    <Box sx={{ display: 'flex', gap: 2, mb: 2, alignItems: 'center' }}>
+    <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} flexWrap="wrap" useFlexGap sx={{ mb: 2, alignItems: { xs: 'stretch', md: 'center' } }}>
       <TextField
         size="small"
         label="Поиск"
         placeholder="ФИО..."
         value={searchDraft}
         onChange={(e) => handleSearchChange(e.target.value)}
-        sx={{ minWidth: 240 }}
+        sx={{ minWidth: 240, flex: { xs: '1 1 auto', md: '0 0 auto' } }}
       />
       <TextField
         select
@@ -66,7 +66,7 @@ export default function PersonFilters() {
         label="Статус"
         value={statusFromUrl}
         onChange={(e) => set('status', e.target.value)}
-        sx={{ minWidth: 160 }}
+        sx={{ minWidth: 160, flex: { xs: '1 1 auto', md: '0 0 auto' } }}
       >
         {STATUS_OPTIONS.map((opt) => (
           <MenuItem key={opt.value} value={opt.value}>
@@ -80,7 +80,7 @@ export default function PersonFilters() {
         label="Регион"
         value={regionFromUrl}
         onChange={(e) => set('region', e.target.value)}
-        sx={{ minWidth: 200 }}
+        sx={{ minWidth: 200, flex: { xs: '1 1 auto', md: '0 0 auto' } }}
       >
         {REGION_OPTIONS.map((opt) => (
           <MenuItem key={opt.value} value={opt.value}>
@@ -91,6 +91,6 @@ export default function PersonFilters() {
       <Button variant="outlined" onClick={handleReset}>
         Сбросить фильтры
       </Button>
-    </Box>
+    </Stack>
   )
 }

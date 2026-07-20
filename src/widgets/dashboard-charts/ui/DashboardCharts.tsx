@@ -13,6 +13,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
+  Legend,
   ResponsiveContainer,
 } from 'recharts'
 import type { PieLabelRenderProps } from 'recharts'
@@ -63,15 +64,15 @@ export default function DashboardCharts({ appealStats, personStats, loading }: D
   if (loading) {
     return (
       <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 4 }}>
-          <ChartSkeleton />
-        </Grid>
-        <Grid size={{ xs: 12, md: 4 }}>
-          <ChartSkeleton />
-        </Grid>
-        <Grid size={{ xs: 12, md: 4 }}>
-          <ChartSkeleton />
-        </Grid>
+      <Grid size={{ xs: 12, sm: 12, md: 4 }}>
+        <ChartSkeleton />
+      </Grid>
+      <Grid size={{ xs: 12, sm: 12, md: 4 }}>
+        <ChartSkeleton />
+      </Grid>
+      <Grid size={{ xs: 12, sm: 12, md: 4 }}>
+        <ChartSkeleton />
+      </Grid>
       </Grid>
     )
   }
@@ -100,13 +101,13 @@ export default function DashboardCharts({ appealStats, personStats, loading }: D
 
   return (
     <Grid container spacing={3}>
-      <Grid size={{ xs: 12, md: 4 }}>
-        <Paper sx={{ p: 3, height: '100%', minHeight: 360 }}>
+      <Grid size={{ xs: 12, sm: 12, md: 4 }}>
+        <Paper sx={{ p: 3, height: '100%', minHeight: 400 }}>
           <Typography variant="h6" gutterBottom>
             Статусы обращений
           </Typography>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
+          <ResponsiveContainer width="100%" height={330}>
+            <PieChart margin={{ top: 20, right: 30, bottom: 20, left: 30 }}>
               <Pie
                 data={statusData}
                 cx="50%"
@@ -123,20 +124,21 @@ export default function DashboardCharts({ appealStats, personStats, loading }: D
                 ))}
               </Pie>
               <Tooltip />
+              <Legend wrapperStyle={{ paddingTop: '20px' }} />
             </PieChart>
           </ResponsiveContainer>
         </Paper>
       </Grid>
 
-      <Grid size={{ xs: 12, md: 4 }}>
-        <Paper sx={{ p: 3, height: '100%', minHeight: 360 }}>
+      <Grid size={{ xs: 12, sm: 12, md: 4 }}>
+        <Paper sx={{ p: 3, height: '100%', minHeight: 400 }}>
           <Typography variant="h6" gutterBottom>
             Категории обращений
           </Typography>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={categoryData}>
+          <ResponsiveContainer width="100%" height={330}>
+            <BarChart data={categoryData} margin={{ bottom: 80 }}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
+              <XAxis dataKey="name" angle={-45} textAnchor="end" />
               <YAxis />
               <Tooltip />
               <Bar dataKey="value" fill={theme.palette.primary.main} />
@@ -145,13 +147,13 @@ export default function DashboardCharts({ appealStats, personStats, loading }: D
         </Paper>
       </Grid>
 
-      <Grid size={{ xs: 12, md: 4 }}>
-        <Paper sx={{ p: 3, height: '100%', minHeight: 360 }}>
+      <Grid size={{ xs: 12, sm: 12, md: 4 }}>
+        <Paper sx={{ p: 3, height: '100%', minHeight: 400 }}>
           <Typography variant="h6" gutterBottom>
             Возрастные группы
           </Typography>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={ageData}>
+          <ResponsiveContainer width="100%" height={330}>
+            <BarChart data={ageData} margin={{ bottom: 20 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis />
