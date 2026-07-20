@@ -15,11 +15,12 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts'
+import type { PieLabelRenderProps } from 'recharts'
 import type { AppealStats, PersonStats } from '@shared/api/stats.api'
 
 interface DashboardChartsProps {
   appealStats?: AppealStats
-  personStats?: AppealStats | PersonStats
+  personStats?: PersonStats
   loading?: boolean
 }
 
@@ -62,13 +63,13 @@ export default function DashboardCharts({ appealStats, personStats, loading }: D
   if (loading) {
     return (
       <Grid container spacing={3}>
-        <Grid item xs={12} md={4}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <ChartSkeleton />
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <ChartSkeleton />
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <ChartSkeleton />
         </Grid>
       </Grid>
@@ -90,8 +91,8 @@ export default function DashboardCharts({ appealStats, personStats, loading }: D
       }))
     : []
 
-  const ageData = personStats && 'ageGroups' in personStats
-    ? Object.entries((personStats as PersonStats).ageGroups).map(([key, value]) => ({
+  const ageData = personStats
+    ? Object.entries(personStats.ageGroups).map(([key, value]) => ({
         name: key,
         value,
       }))
@@ -99,7 +100,7 @@ export default function DashboardCharts({ appealStats, personStats, loading }: D
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12} md={4}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <Paper sx={{ p: 3, height: '100%', minHeight: 360 }}>
           <Typography variant="h6" gutterBottom>
             Статусы обращений
@@ -113,7 +114,7 @@ export default function DashboardCharts({ appealStats, personStats, loading }: D
                 innerRadius={50}
                 outerRadius={100}
                 dataKey="value"
-                label={({ name, percent }: { name: string; percent?: number }) =>
+                label={({ name, percent }: PieLabelRenderProps) =>
                   `${name} ${((percent ?? 0) * 100).toFixed(0)}%`
                 }
               >
@@ -127,7 +128,7 @@ export default function DashboardCharts({ appealStats, personStats, loading }: D
         </Paper>
       </Grid>
 
-      <Grid item xs={12} md={4}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <Paper sx={{ p: 3, height: '100%', minHeight: 360 }}>
           <Typography variant="h6" gutterBottom>
             Категории обращений
@@ -144,7 +145,7 @@ export default function DashboardCharts({ appealStats, personStats, loading }: D
         </Paper>
       </Grid>
 
-      <Grid item xs={12} md={4}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <Paper sx={{ p: 3, height: '100%', minHeight: 360 }}>
           <Typography variant="h6" gutterBottom>
             Возрастные группы
