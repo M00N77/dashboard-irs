@@ -106,7 +106,7 @@ React Query берёт на себя кэширование, фоновую пе
 
 ```bash
 # Клонирование репозитория
-git clone <repository-url>
+git clone https://github.com/M00N77/dashboard-irs.git
 
 # Установка зависимостей
 npm install
@@ -167,7 +167,7 @@ npm run generate:mock
 
 ### Интерфейс
 
-![Дашборд](preview/1.png)
-![Картотека](preview/2.png)
-![Карточка — вкладка Образование](preview/3.png)
-![Карточка — вкладка Обращения](preview/4.png)
+![](https://raw.githubusercontent.com/M00N77/dashboard-irs/main/public/preview/1.png)
+![](https://raw.githubusercontent.com/M00N77/dashboard-irs/main/public/preview/2.png)
+![](https://raw.githubusercontent.com/M00N77/dashboard-irs/main/public/preview/3.png)
+![](https://raw.githubusercontent.com/M00N77/dashboard-irs/main/public/preview/4.png)
