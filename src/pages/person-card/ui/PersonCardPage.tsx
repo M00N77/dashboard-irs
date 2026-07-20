@@ -126,7 +126,7 @@ export default function PersonCardPage() {
         </Paper>
 
         <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-          <Tabs value={activeTab} onChange={handleTabChange}>
+          <Tabs value={activeTab} onChange={handleTabChange} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>
             {TABS.map((tab) => (
               <Tab key={tab.value} value={tab.value} label={tab.label} />
             ))}

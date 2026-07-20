@@ -43,6 +43,11 @@ const columns = [
   }),
   columnHelper.accessor('region', {
     header: 'Регион',
+    cell: (info) => (
+      <span style={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 100 }}>
+        {info.getValue() as string}
+      </span>
+    ),
   }),
 ]
 
@@ -127,12 +132,12 @@ export default function PersonTableWidget() {
       )}
 
       <TableContainer sx={{ overflowX: 'auto', width: '100%' }}>
-      <Table>
+      <Table size="small">
         <TableHead>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableCell key={header.id}>
+                <TableCell key={header.id} sx={{ px: { xs: 1, sm: 2 }, py: { xs: 1, sm: 1.5 }, fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                   {header.column.getCanSort() ? (
                     <TableSortLabel
                       active={header.column.getIsSorted() !== false}
@@ -158,7 +163,7 @@ export default function PersonTableWidget() {
               onClick={() => navigate(`/registry/${row.original.id}`)}
             >
               {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
+                <TableCell key={cell.id} sx={{ px: { xs: 1, sm: 2 }, py: { xs: 1, sm: 1.5 }, fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                   {cell.column.id === 'birthDate'
                     ? formatDate(cell.getValue() as string)
                     : flexRender(cell.column.columnDef.cell, cell.getContext())}

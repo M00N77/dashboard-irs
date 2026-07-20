@@ -51,7 +51,7 @@ export default function PersonFilters() {
   }
 
   return (
-    <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} flexWrap="wrap" useFlexGap sx={{ mb: 2, alignItems: { xs: 'stretch', md: 'center' } }}>
+    <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} useFlexGap sx={{ mb: 2, flexWrap: 'wrap', alignItems: { xs: 'stretch', md: 'center' } }}>
       <TextField
         size="small"
         label="Поиск"
