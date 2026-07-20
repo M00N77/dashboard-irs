@@ -1,6 +1,6 @@
 export interface FamilyMember {
-  id: string
-  personId: string
+  id: number
+  personId: number
   relation: 'spouse' | 'child' | 'parent' | 'sibling'
   firstName: string
   lastName: string

@@ -1,24 +1,74 @@
 import { http, HttpResponse, delay } from 'msw'
 import type { PersonDetails, PersonSummary } from '@entities/person/model/types'
+import type { Appeal } from '@entities/appeal/model/types'
+import type { StatsResponse } from '@shared/api/stats.api'
+import { getCachedPersons, getCachedPersonsSync } from '@shared/api/mock-data/cache'
 
-let personsCache: PersonDetails[] | null = null
-let loadPromise: Promise<PersonDetails[]> | null = null
+let cachedStats: StatsResponse | null = null
 
-async function getCachedPersons(): Promise<PersonDetails[]> {
-  if (personsCache) return personsCache
-  if (loadPromise) return loadPromise
+function buildStats(persons: PersonDetails[]): StatsResponse {
+  const totalPersons = persons.length
+  const male = persons.filter((p) => p.gender === 'male').length
+  const female = persons.filter((p) => p.gender === 'female').length
 
-  loadPromise = fetch('/mock-data/persons.json')
-    .then((res) => {
-      if (!res.ok) throw new Error('Failed to load mock data')
-      return res.json() as Promise<PersonDetails[]>
-    })
-    .then((data) => {
-      personsCache = data
-      return data
-    })
+  const now = new Date()
+  const ageGroups: Record<string, number> = {}
+  for (const p of persons) {
+    const birth = new Date(p.birthDate)
+    const age = now.getFullYear() - birth.getFullYear()
+    const group =
+      age < 18 ? 'under 18' : age <= 30 ? '18-30' : age <= 45 ? '30-45' : age <= 60 ? '45-60' : '60+'
+    ageGroups[group] = (ageGroups[group] || 0) + 1
+  }
 
-  return loadPromise
+  const CATEGORY_KEY_MAP: Record<string, string> = {
+    'Обращение по ТКО': 'tko',
+    'ЖКХ': 'jkh',
+    'Жалоба': 'complaint',
+    'Запрос информации': 'info',
+    'Иное': 'other',
+  }
+
+  let totalAppeals = 0
+  const byStatus: Record<string, number> = {}
+  const byCategory: Record<string, number> = {}
+  const activePersonIds = new Set<number>()
+
+  for (const p of persons) {
+    for (const a of p.appeals) {
+      totalAppeals++
+      byStatus[a.status] = (byStatus[a.status] || 0) + 1
+
+      const catKey = CATEGORY_KEY_MAP[a.category] || 'other'
+      byCategory[catKey] = (byCategory[catKey] || 0) + 1
+
+      if (a.status === 'new' || a.status === 'in-progress') {
+        activePersonIds.add(p.id)
+      }
+    }
+  }
+
+  return {
+    summary: { totalPersons, totalAppeals, activePersons: activePersonIds.size },
+    personStats: { genderDistribution: { male, female }, ageGroups },
+    appealStats: { byStatus, byCategory },
+  }
+}
+
+function invalidateStatsCache(): void {
+  const cache = getCachedPersonsSync()
+  if (cache) {
+    cachedStats = buildStats(cache)
+  } else {
+    cachedStats = null
+  }
+}
+
+function findPersonIndex(id: number): number | null {
+  const cache = getCachedPersonsSync()
+  if (!cache) return null
+  const idx = cache.findIndex((p) => p.id === id)
+  return idx >= 0 ? idx : null
 }
 
 function toPersonSummary(details: PersonDetails): PersonSummary {
@@ -31,11 +81,12 @@ function toPersonSummary(details: PersonDetails): PersonSummary {
     gender: details.gender,
     status: details.status,
     region: details.region,
+    registryCode: details.registryCode,
   }
 }
 
 function randomDelay(): Promise<void> {
-  return delay(Math.floor(Math.random() * 701) + 100)
+  return delay(Math.floor(Math.random() * 101) + 50)
 }
 
 const mutationDelay = () => delay(400)
@@ -94,7 +145,7 @@ export const handlers = [
   http.get('/api/persons/:id', async ({ params }) => {
     await randomDelay()
 
-    const { id } = params
+    const id = parseInt(params.id as string, 10)
     const allPersons = await getCachedPersons()
     const person = allPersons.find((p) => p.id === id)
 
@@ -106,78 +157,158 @@ export const handlers = [
   }),
 
   http.get('/api/stats', async () => {
-    await randomDelay()
-
-    const allPersons = await getCachedPersons()
-    const totalPersons = allPersons.length
-    const male = allPersons.filter((p) => p.gender === 'male').length
-    const female = allPersons.filter((p) => p.gender === 'female').length
-    const employed = allPersons.filter((p) =>
-      p.employment.some((e) => e.endDate === null),
-    ).length
-    const unemployed = totalPersons - employed
-
-    const byRegion: Record<string, number> = {}
-    for (const p of allPersons) {
-      byRegion[p.region] = (byRegion[p.region] || 0) + 1
+    const persons = await getCachedPersons()
+    if (!cachedStats) {
+      cachedStats = buildStats(persons)
     }
-
-    const byAgeGroup: Record<string, number> = {}
-    const now = new Date()
-    for (const p of allPersons) {
-      const birth = new Date(p.birthDate)
-      const age = now.getFullYear() - birth.getFullYear()
-      const group =
-        age < 18 ? 'under 18' : age <= 30 ? '18-30' : age <= 45 ? '30-45' : age <= 60 ? '45-60' : '60+'
-      byAgeGroup[group] = (byAgeGroup[group] || 0) + 1
-    }
-
-    return HttpResponse.json({
-      totalPersons,
-      male,
-      female,
-      employed,
-      unemployed,
-      byRegion,
-      byAgeGroup,
-    })
+    return HttpResponse.json(cachedStats)
   }),
 
-  // Mutation handlers — these return the sent data but do NOT persist to disk.
-  // After invalidateQueries the UI will fetch old data from the in-memory cache.
-  // This is expected behavior for the mock environment.
+  // Mutation handlers — these update the in-memory cache but do NOT persist to disk.
+  // After invalidateQueries the UI will fetch the updated data from cache.
+  // On page reload the original data from persons.json is loaded.
 
   http.put('/api/persons/:id', async ({ params, request }) => {
     await mutationDelay()
     const body = (await request.json()) as Record<string, unknown>
-    return HttpResponse.json({ id: params.id, ...body })
+    const id = parseInt(params.id as string, 10)
+    const idx = findPersonIndex(id)
+    if (idx !== null) {
+      const persons = getCachedPersonsSync()
+      if (persons) {
+        persons[idx] = { ...persons[idx], ...body } as PersonDetails
+      }
+    }
+    invalidateStatsCache()
+    return HttpResponse.json({ id, ...body })
   }),
 
-  http.post('/api/persons/:id/family', async ({ request }) => {
+  http.post('/api/persons/:id/family', async ({ params, request }) => {
     await mutationDelay()
     const body = (await request.json()) as Record<string, unknown>
-    return HttpResponse.json(
-      { id: crypto.randomUUID(), personId: '', ...body },
-      { status: 201 },
-    )
+    const personId = parseInt(params.id as string, 10)
+    const newMember = { id: Date.now(), personId, ...body }
+    const idx = findPersonIndex(personId)
+    if (idx !== null) {
+      const persons = getCachedPersonsSync()
+      if (persons) {
+        persons[idx].family.push(newMember as never)
+      }
+    }
+    return HttpResponse.json(newMember, { status: 201 })
   }),
 
-  http.delete('/api/persons/:id/family/:memberId', async () => {
+  http.delete('/api/persons/:id/family/:memberId', async ({ params }) => {
     await mutationDelay()
+    const id = parseInt(params.id as string, 10)
+    const memberId = parseInt(params.memberId as string, 10)
+    const idx = findPersonIndex(id)
+    if (idx !== null) {
+      const persons = getCachedPersonsSync()
+      if (persons) {
+        persons[idx].family = persons[idx].family.filter(
+          (m: { id: number }) => m.id !== memberId,
+        )
+      }
+    }
     return HttpResponse.json(null, { status: 204 })
   }),
 
-  http.post('/api/persons/:id/education', async ({ request }) => {
+  http.post('/api/persons/:id/education', async ({ params, request }) => {
     await mutationDelay()
     const body = (await request.json()) as Record<string, unknown>
-    return HttpResponse.json(
-      { id: crypto.randomUUID(), personId: '', ...body },
-      { status: 201 },
-    )
+    const personId = parseInt(params.id as string, 10)
+    const newRecord = { id: Date.now(), personId, ...body }
+    const idx = findPersonIndex(personId)
+    if (idx !== null) {
+      const persons = getCachedPersonsSync()
+      if (persons) {
+        persons[idx].education.push(newRecord as never)
+      }
+    }
+    return HttpResponse.json(newRecord, { status: 201 })
   }),
 
-  http.delete('/api/persons/:id/education/:recordId', async () => {
+  http.delete('/api/persons/:id/education/:recordId', async ({ params }) => {
     await mutationDelay()
+    const id = parseInt(params.id as string, 10)
+    const recordId = parseInt(params.recordId as string, 10)
+    const idx = findPersonIndex(id)
+    if (idx !== null) {
+      const persons = getCachedPersonsSync()
+      if (persons) {
+        persons[idx].education = persons[idx].education.filter(
+          (r: { id: number }) => r.id !== recordId,
+        )
+      }
+    }
+    return HttpResponse.json(null, { status: 204 })
+  }),
+
+  // Appeal handlers
+
+  http.post('/api/persons/:id/appeals', async ({ params, request }) => {
+    await mutationDelay()
+    const body = (await request.json()) as Record<string, unknown>
+    const personId = parseInt(params.id as string, 10)
+    const newAppeal: Appeal = {
+      id: Date.now(),
+      personId,
+      source: body.source as Appeal['source'],
+      category: body.category as string,
+      registeredAt: body.registeredAt as string,
+      status: body.status as Appeal['status'],
+      responsible: body.responsible as string,
+      dueDate: body.dueDate as string,
+      resolutionText: body.resolutionText as string | undefined,
+      attachments: [],
+    }
+    const idx = findPersonIndex(personId)
+    if (idx !== null) {
+      const persons = getCachedPersonsSync()
+      if (persons) {
+        persons[idx].appeals.push(newAppeal)
+      }
+    }
+    invalidateStatsCache()
+    return HttpResponse.json(newAppeal, { status: 201 })
+  }),
+
+  http.patch('/api/persons/:id/appeals/:appealId', async ({ params, request }) => {
+    await mutationDelay()
+    const body = (await request.json()) as { status: Appeal['status'] }
+    const id = parseInt(params.id as string, 10)
+    const appealId = parseInt(params.appealId as string, 10)
+    const idx = findPersonIndex(id)
+    if (idx !== null) {
+      const persons = getCachedPersonsSync()
+      if (persons) {
+        const appeal = persons[idx].appeals.find((a: { id: number }) => a.id === appealId)
+        if (appeal) {
+          appeal.status = body.status
+          invalidateStatsCache()
+          return HttpResponse.json(appeal)
+        }
+        return HttpResponse.json({ error: 'Appeal Not Found' }, { status: 404 })
+      }
+    }
+    return HttpResponse.json({ id: appealId, ...body })
+  }),
+
+  http.delete('/api/persons/:id/appeals/:appealId', async ({ params }) => {
+    await mutationDelay()
+    const id = parseInt(params.id as string, 10)
+    const appealId = parseInt(params.appealId as string, 10)
+    const idx = findPersonIndex(id)
+    if (idx !== null) {
+      const persons = getCachedPersonsSync()
+      if (persons) {
+        persons[idx].appeals = persons[idx].appeals.filter(
+          (a: { id: number }) => a.id !== appealId,
+        )
+      }
+    }
+    invalidateStatsCache()
     return HttpResponse.json(null, { status: 204 })
   }),
 ]

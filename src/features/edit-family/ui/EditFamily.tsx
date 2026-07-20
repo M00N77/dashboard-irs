@@ -19,7 +19,10 @@ import CircularProgress from '@mui/material/CircularProgress'
 import type { PersonDetails } from '@entities/person/model/types'
 import type { FamilyMember } from '@entities/family/model/types'
 import { addFamilyMember, deleteFamilyMember } from '@shared/api/persons.api'
-import { familyMemberSchema, type FamilyMemberFormValues } from '../model/schema'
+import { z } from 'zod'
+import { familyMemberSchema } from '../model/schema'
+
+type FamilyFormValues = z.infer<typeof familyMemberSchema>
 
 const RELATION_LABELS: Record<FamilyMember['relation'], string> = {
   spouse: 'Супруг(а)',
@@ -42,7 +45,7 @@ export default function EditFamily({ person }: Props) {
     handleSubmit,
     reset: resetForm,
     formState: { errors },
-  } = useForm<FamilyMemberFormValues>({
+  } = useForm<FamilyFormValues>({
     resolver: zodResolver(familyMemberSchema),
     defaultValues: {
       relation: 'spouse',
@@ -53,7 +56,7 @@ export default function EditFamily({ person }: Props) {
   })
 
   const addMutation = useMutation({
-    mutationFn: (data: FamilyMemberFormValues) => addFamilyMember(person.id, data),
+    mutationFn: (data: FamilyFormValues) => addFamilyMember(person.id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['person', person.id] })
       setShowForm(false)
@@ -62,14 +65,14 @@ export default function EditFamily({ person }: Props) {
   })
 
   const deleteMutation = useMutation({
-    mutationFn: (memberId: string) => deleteFamilyMember(person.id, memberId),
+    mutationFn: (memberId: number) => deleteFamilyMember(person.id, memberId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['person', person.id] })
       setDeleteTarget(null)
     },
   })
 
-  const onSubmit = (data: FamilyMemberFormValues) => {
+  const onSubmit = (data: FamilyFormValues) => {
     addMutation.mutate(data)
   }
 
@@ -158,7 +161,7 @@ export default function EditFamily({ person }: Props) {
               helperText={errors.birthDate?.message}
               size="small"
               fullWidth
-              InputLabelProps={{ shrink: true }}
+              slotProps={{ inputLabel: { shrink: true } }}
             />
           </DialogContent>
           <DialogActions>

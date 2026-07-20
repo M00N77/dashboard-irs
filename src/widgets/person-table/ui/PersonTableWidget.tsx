@@ -8,14 +8,16 @@ import {
 } from '@tanstack/react-table'
 import type { SortingState } from '@tanstack/react-table'
 import Table from '@mui/material/Table'
-import TableHead from '@mui/material/TableHead'
 import TableBody from '@mui/material/TableBody'
-import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
 import TablePagination from '@mui/material/TablePagination'
+import TableRow from '@mui/material/TableRow'
 import TableSortLabel from '@mui/material/TableSortLabel'
 import Typography from '@mui/material/Typography'
 import LinearProgress from '@mui/material/LinearProgress'
+import Skeleton from '@mui/material/Skeleton'
 import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
@@ -42,8 +44,21 @@ const columns = [
   }),
   columnHelper.accessor('region', {
     header: 'Регион',
+    cell: (info) => (
+      <span style={{ whiteSpace: 'normal', wordBreak: 'break-word', minWidth: 100 }}>
+        {info.getValue() as string}
+      </span>
+    ),
   }),
 ]
+
+const columnWidths: Record<string, string> = {
+  fio: '25%',
+  birthDate: '15%',
+  gender: '10%',
+  status: '15%',
+  region: '35%',
+}
 
 function formatDate(dateStr: string) {
   return new Intl.DateTimeFormat('ru-RU').format(new Date(dateStr))
@@ -61,7 +76,7 @@ export default function PersonTableWidget() {
   const sortBy = get('sortBy', '')
   const sortOrder = get('sortOrder', '')
 
-  const { data, isFetching, isError, refetch } = usePersonsQuery({
+  const { data, isFetching, isLoading, isError, refetch } = usePersonsQuery({
     page,
     limit,
     search,
@@ -103,6 +118,45 @@ export default function PersonTableWidget() {
     },
   })
 
+  if (isLoading) {
+    return (
+      <Box>
+        <Skeleton variant="text" width={100} height={24} sx={{ mb: 1 }} />
+        <TableContainer sx={{ overflowX: 'auto', width: '100%' }}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                {columns.map((col) => {
+                  const colId = col.id!
+                  return (
+                    <TableCell key={colId} sx={{ px: { xs: 1, sm: 2 }, py: { xs: 1, sm: 1.5 }, minWidth: columnWidths[colId] }}>
+                      <Skeleton variant="text" width="80%" />
+                    </TableCell>
+                  )
+                })}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {Array.from({ length: 10 }).map((_, rowIdx) => (
+                <TableRow key={rowIdx}>
+                  {columns.map((col) => {
+                    const colId = col.id!
+                    return (
+                      <TableCell key={colId} sx={{ px: { xs: 1, sm: 2 }, py: { xs: 1, sm: 1.5 }, minWidth: columnWidths[colId] }}>
+                        <Skeleton variant="text" width="100%" />
+                      </TableCell>
+                    )
+                  })}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Skeleton variant="rectangular" width={300} height={36} sx={{ mt: 2 }} />
+      </Box>
+    )
+  }
+
   return (
     <Box>
       <Typography variant="body2" sx={{ mb: 1, color: 'text.secondary' }}>
@@ -125,12 +179,13 @@ export default function PersonTableWidget() {
         </Alert>
       )}
 
-      <Table>
+      <TableContainer sx={{ overflowX: 'auto', width: '100%' }}>
+      <Table size="small">
         <TableHead>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableCell key={header.id}>
+                <TableCell key={header.id} sx={{ px: { xs: 1, sm: 2 }, py: { xs: 1, sm: 1.5 }, fontSize: { xs: '0.75rem', sm: '0.875rem' }, minWidth: columnWidths[header.column.id] }}>
                   {header.column.getCanSort() ? (
                     <TableSortLabel
                       active={header.column.getIsSorted() !== false}
@@ -156,7 +211,7 @@ export default function PersonTableWidget() {
               onClick={() => navigate(`/registry/${row.original.id}`)}
             >
               {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
+                <TableCell key={cell.id} sx={{ px: { xs: 1, sm: 2 }, py: { xs: 1, sm: 1.5 }, fontSize: { xs: '0.75rem', sm: '0.875rem' }, minWidth: columnWidths[cell.column.id] }}>
                   {cell.column.id === 'birthDate'
                     ? formatDate(cell.getValue() as string)
                     : flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -166,6 +221,7 @@ export default function PersonTableWidget() {
           ))}
         </TableBody>
       </Table>
+      </TableContainer>
 
       <TablePagination
         component="div"
