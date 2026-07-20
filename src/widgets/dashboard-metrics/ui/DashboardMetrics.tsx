@@ -25,7 +25,7 @@ export default function DashboardMetrics({ data, loading }: DashboardMetricsProp
       {metricCards.map((card) => {
         const Icon = card.icon
         return (
-          <Grid item xs={12} sm={6} md={4} key={card.field}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={card.field}>
             <Card variant="outlined" sx={{ height: '100%' }}>
               <CardContent
                 sx={{
