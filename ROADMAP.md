@@ -11,14 +11,14 @@
 
 ### Чеклист
 
-- [ ] Инициализировать Vite + React + TS (`npm create vite@latest`)
-- [ ] Установить и настроить MUI, React Router, React Query, React Hook Form + Zod
-- [ ] Установить и настроить MSW (пока пустые `handlers`)
-- [ ] Развернуть FSD-директорию: `app`, `pages`, `widgets`, `features`, `entities`, `shared`
-- [ ] Настроить ESLint + Prettier
-- [ ] Настроить алиасы путей (`@/` → `src/`)
-- [ ] Инициализировать Git, создать `.gitignore`
-- [ ] Создать пустой `README.md`
+- [x] Инициализировать Vite + React + TS (`npm create vite@latest`)
+- [x] Установить и настроить MUI, React Router, React Query, React Hook Form + Zod
+- [x] Установить и настроить MSW (пока пустые `handlers`)
+- [x] Развернуть FSD-директорию: `app`, `pages`, `widgets`, `features`, `entities`, `shared`
+- [x] Настроить ESLint + Prettier
+- [x] Настроить алиасы путей (`@/` → `src/`)
+- [x] Инициализировать Git, создать `.gitignore`
+- [x] Создать пустой `README.md`
 
 ### Ключевые технические решения
 
