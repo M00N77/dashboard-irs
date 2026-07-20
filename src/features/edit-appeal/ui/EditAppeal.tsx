@@ -20,6 +20,7 @@ import type { PersonDetails } from '@entities/person/model/types'
 import type { Appeal } from '@entities/appeal/model/types'
 import { addAppeal, updateAppealStatus, deleteAppeal } from '@shared/api/persons.api'
 import { appealFormSchema, type AppealFormValues } from '../model/schema'
+import { formatDate } from '@shared/lib/date'
 import {
   SOURCE_LABELS,
   STATUS_LABELS,
@@ -88,10 +89,6 @@ export default function EditAppeal({ person }: Props) {
     if (deleteTarget) {
       deleteMutation.mutate(deleteTarget.id)
     }
-  }
-
-  function formatDate(dateStr: string) {
-    return new Intl.DateTimeFormat('ru-RU').format(new Date(dateStr))
   }
 
   return (

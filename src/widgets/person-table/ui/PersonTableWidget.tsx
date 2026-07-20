@@ -24,6 +24,7 @@ import Box from '@mui/material/Box'
 import type { PersonSummary } from '@entities/person/model/types'
 import { usePersonsQuery } from '@entities/person/model/usePersonsQuery'
 import { useUrlState } from '@features/person-filters/lib/useUrlState'
+import { formatDate } from '@shared/lib/date'
 
 const columnHelper = createColumnHelper<PersonSummary>()
 
@@ -58,10 +59,6 @@ const columnWidths: Record<string, string> = {
   gender: '10%',
   status: '15%',
   region: '35%',
-}
-
-function formatDate(dateStr: string) {
-  return new Intl.DateTimeFormat('ru-RU').format(new Date(dateStr))
 }
 
 export default function PersonTableWidget() {

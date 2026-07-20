@@ -12,6 +12,7 @@ import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { usePersonQuery } from '@entities/person/model/usePersonQuery'
+import { calculateAge, genderLabel } from '@shared/lib/date'
 import EditPersonGeneral from '@features/edit-person-general/ui/EditPersonGeneral'
 
 const EditFamily = lazy(() => import('@features/edit-family/ui/EditFamily'))
@@ -26,21 +27,6 @@ const TABS = [
   { value: 'housing', label: 'Жильё' },
   { value: 'appeals', label: 'Обращения' },
 ]
-
-function calculateAge(birthDate: string): number {
-  const birth = new Date(birthDate)
-  const today = new Date()
-  let age = today.getFullYear() - birth.getFullYear()
-  const monthDiff = today.getMonth() - birth.getMonth()
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-    age--
-  }
-  return age
-}
-
-function genderLabel(gender: string): string {
-  return gender === 'male' ? 'Мужской' : 'Женский'
-}
 
 export default function PersonCardPage() {
   const params = useParams<{ id: string }>()

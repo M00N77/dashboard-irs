@@ -21,6 +21,7 @@ import type { FamilyMember } from '@entities/family/model/types'
 import { addFamilyMember, deleteFamilyMember } from '@shared/api/persons.api'
 import { z } from 'zod'
 import { familyMemberSchema } from '../model/schema'
+import { formatDate } from '@shared/lib/date'
 
 type FamilyFormValues = z.infer<typeof familyMemberSchema>
 
@@ -80,10 +81,6 @@ export default function EditFamily({ person }: Props) {
     if (deleteTarget) {
       deleteMutation.mutate(deleteTarget.id)
     }
-  }
-
-  function formatDate(dateStr: string) {
-    return new Intl.DateTimeFormat('ru-RU').format(new Date(dateStr))
   }
 
   return (
