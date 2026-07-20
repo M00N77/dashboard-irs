@@ -1,5 +1,6 @@
 import { http, HttpResponse, delay } from 'msw'
 import type { PersonDetails, PersonSummary } from '@entities/person/model/types'
+import type { Appeal } from '@entities/appeal/model/types'
 
 let personsCache: PersonDetails[] | null = null
 let loadPromise: Promise<PersonDetails[]> | null = null
@@ -19,6 +20,12 @@ async function getCachedPersons(): Promise<PersonDetails[]> {
     })
 
   return loadPromise
+}
+
+function findPersonIndex(id: string): number | null {
+  if (!personsCache) return null
+  const idx = personsCache.findIndex((p) => p.id === id)
+  return idx >= 0 ? idx : null
 }
 
 function toPersonSummary(details: PersonDetails): PersonSummary {
@@ -143,41 +150,111 @@ export const handlers = [
     })
   }),
 
-  // Mutation handlers — these return the sent data but do NOT persist to disk.
-  // After invalidateQueries the UI will fetch old data from the in-memory cache.
-  // This is expected behavior for the mock environment.
+  // Mutation handlers — these update the in-memory cache but do NOT persist to disk.
+  // After invalidateQueries the UI will fetch the updated data from cache.
+  // On page reload the original data from persons.json is loaded.
 
   http.put('/api/persons/:id', async ({ params, request }) => {
     await mutationDelay()
     const body = (await request.json()) as Record<string, unknown>
+    const idx = findPersonIndex(params.id as string)
+    if (idx !== null && personsCache) {
+      personsCache[idx] = { ...personsCache[idx], ...body } as PersonDetails
+    }
     return HttpResponse.json({ id: params.id, ...body })
   }),
 
-  http.post('/api/persons/:id/family', async ({ request }) => {
+  http.post('/api/persons/:id/family', async ({ params, request }) => {
     await mutationDelay()
     const body = (await request.json()) as Record<string, unknown>
-    return HttpResponse.json(
-      { id: crypto.randomUUID(), personId: '', ...body },
-      { status: 201 },
-    )
+    const newMember = { id: crypto.randomUUID(), personId: params.id as string, ...body }
+    const idx = findPersonIndex(params.id as string)
+    if (idx !== null && personsCache) {
+      personsCache[idx].family.push(newMember as never)
+    }
+    return HttpResponse.json(newMember, { status: 201 })
   }),
 
-  http.delete('/api/persons/:id/family/:memberId', async () => {
+  http.delete('/api/persons/:id/family/:memberId', async ({ params }) => {
     await mutationDelay()
+    const idx = findPersonIndex(params.id as string)
+    if (idx !== null && personsCache) {
+      personsCache[idx].family = personsCache[idx].family.filter(
+        (m) => m.id !== params.memberId,
+      )
+    }
     return HttpResponse.json(null, { status: 204 })
   }),
 
-  http.post('/api/persons/:id/education', async ({ request }) => {
+  http.post('/api/persons/:id/education', async ({ params, request }) => {
     await mutationDelay()
     const body = (await request.json()) as Record<string, unknown>
-    return HttpResponse.json(
-      { id: crypto.randomUUID(), personId: '', ...body },
-      { status: 201 },
-    )
+    const newRecord = { id: crypto.randomUUID(), personId: params.id as string, ...body }
+    const idx = findPersonIndex(params.id as string)
+    if (idx !== null && personsCache) {
+      personsCache[idx].education.push(newRecord as never)
+    }
+    return HttpResponse.json(newRecord, { status: 201 })
   }),
 
-  http.delete('/api/persons/:id/education/:recordId', async () => {
+  http.delete('/api/persons/:id/education/:recordId', async ({ params }) => {
     await mutationDelay()
+    const idx = findPersonIndex(params.id as string)
+    if (idx !== null && personsCache) {
+      personsCache[idx].education = personsCache[idx].education.filter(
+        (r) => r.id !== params.recordId,
+      )
+    }
+    return HttpResponse.json(null, { status: 204 })
+  }),
+
+  // Appeal handlers
+
+  http.post('/api/persons/:id/appeals', async ({ params, request }) => {
+    await mutationDelay()
+    const body = (await request.json()) as Record<string, unknown>
+    const newAppeal: Appeal = {
+      id: crypto.randomUUID(),
+      personId: params.id as string,
+      source: body.source as Appeal['source'],
+      category: body.category as string,
+      registeredAt: body.registeredAt as string,
+      status: body.status as Appeal['status'],
+      responsible: body.responsible as string,
+      dueDate: body.dueDate as string,
+      resolutionText: body.resolutionText as string | undefined,
+      attachments: [],
+    }
+    const idx = findPersonIndex(params.id as string)
+    if (idx !== null && personsCache) {
+      personsCache[idx].appeals.push(newAppeal)
+    }
+    return HttpResponse.json(newAppeal, { status: 201 })
+  }),
+
+  http.patch('/api/persons/:id/appeals/:appealId', async ({ params, request }) => {
+    await mutationDelay()
+    const body = (await request.json()) as { status: Appeal['status'] }
+    const idx = findPersonIndex(params.id as string)
+    if (idx !== null && personsCache) {
+      const appeal = personsCache[idx].appeals.find((a) => a.id === params.appealId)
+      if (appeal) {
+        appeal.status = body.status
+        return HttpResponse.json(appeal)
+      }
+      return HttpResponse.json({ error: 'Appeal Not Found' }, { status: 404 })
+    }
+    return HttpResponse.json({ id: params.appealId, ...body })
+  }),
+
+  http.delete('/api/persons/:id/appeals/:appealId', async ({ params }) => {
+    await mutationDelay()
+    const idx = findPersonIndex(params.id as string)
+    if (idx !== null && personsCache) {
+      personsCache[idx].appeals = personsCache[idx].appeals.filter(
+        (a) => a.id !== params.appealId,
+      )
+    }
     return HttpResponse.json(null, { status: 204 })
   }),
 ]
