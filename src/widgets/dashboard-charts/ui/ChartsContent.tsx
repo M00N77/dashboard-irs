@@ -76,7 +76,7 @@ export default function ChartsContent({ appealStats, personStats }: ChartsConten
     <Grid container spacing={3} sx={{ minHeight: 400 }}>
       <Grid size={{ xs: 12, sm: 12, md: 4 }}>
         <Paper sx={{ p: 3, height: 400, width: '100%', overflow: 'hidden' }}>
-          <Typography variant="h6" sx={{ lineHeight: 1.3, mb: 2 }}>
+          <Typography variant="h6" sx={{ lineHeight: 1.3, mb: 1 }}>
             Статусы обращений
           </Typography>
           <ResponsiveContainer width="100%" height={320}>
@@ -105,7 +105,7 @@ export default function ChartsContent({ appealStats, personStats }: ChartsConten
 
       <Grid size={{ xs: 12, sm: 12, md: 4 }}>
         <Paper sx={{ p: 3, height: 400, width: '100%', overflow: 'hidden' }}>
-          <Typography variant="h6" sx={{ lineHeight: 1.3, mb: 2 }}>
+          <Typography variant="h6" sx={{ lineHeight: 1.3, mb: 1 }}>
             Категории обращений
           </Typography>
           <ResponsiveContainer width="100%" height={320}>
@@ -122,7 +122,7 @@ export default function ChartsContent({ appealStats, personStats }: ChartsConten
 
       <Grid size={{ xs: 12, sm: 12, md: 4 }}>
         <Paper sx={{ p: 3, height: 400, width: '100%', overflow: 'hidden' }}>
-          <Typography variant="h6" sx={{ lineHeight: 1.3, mb: 2 }}>
+          <Typography variant="h6" sx={{ lineHeight: 1.3, mb: 1 }}>
             Возрастные группы
           </Typography>
           <ResponsiveContainer width="100%" height={320}>

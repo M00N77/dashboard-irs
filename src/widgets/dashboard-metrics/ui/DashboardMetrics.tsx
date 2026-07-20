@@ -3,6 +3,7 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 import Skeleton from '@mui/material/Skeleton'
+import Box from '@mui/material/Box'
 import PeopleIcon from '@mui/icons-material/People'
 import ForumIcon from '@mui/icons-material/Forum'
 import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck'
@@ -41,13 +42,15 @@ export default function DashboardMetrics({ data, loading }: DashboardMetricsProp
                   <Typography variant="body2" color="text.secondary">
                     {card.label}
                   </Typography>
-                  {loading ? (
-                    <Skeleton variant="text" sx={{ fontSize: '2.125rem', lineHeight: 1.2, width: '100%', maxWidth: 120 }} />
-                  ) : (
-                    <Typography variant="h4" sx={{ fontWeight: 'bold', lineHeight: 1.2 }}>
-                      {data?.[card.field] ?? '—'}
-                    </Typography>
-                  )}
+                  <Box sx={{ minWidth: 140 }}>
+                    {loading ? (
+                      <Skeleton variant="text" sx={{ fontSize: '2.125rem', lineHeight: 1.2 }} />
+                    ) : (
+                      <Typography variant="h4" sx={{ fontWeight: 'bold', lineHeight: 1.2 }}>
+                        {data?.[card.field] ?? '—'}
+                      </Typography>
+                    )}
+                  </Box>
                 </div>
               </CardContent>
             </Card>
