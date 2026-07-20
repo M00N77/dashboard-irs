@@ -7,9 +7,9 @@ async function start() {
 
   await worker.start({ onUnhandledRequest: 'bypass' })
 
-  import('@shared/api/mock-data/cache').then(({ getCachedPersons }) =>
-    getCachedPersons(),
-  )
+  import('@shared/api/mock-data/cache')
+    .then(({ getCachedPersons }) => getCachedPersons())
+    .catch(console.error)
 
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
