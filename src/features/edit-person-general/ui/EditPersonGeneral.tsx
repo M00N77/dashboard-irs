@@ -14,10 +14,10 @@ import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import type { PersonDetails } from '@entities/person/model/types'
 import { updatePerson } from '@shared/api/persons.api'
-import {
-  personGeneralSchema,
-  type PersonGeneralFormValues,
-} from '../model/schema'
+import { z } from 'zod'
+import { personGeneralSchema } from '../model/schema'
+
+type PersonGeneralFormValues = z.input<typeof personGeneralSchema>
 
 const STATUS_OPTIONS = [
   { value: 'active', label: 'Активен' },
@@ -120,7 +120,7 @@ export default function EditPersonGeneral({ person }: Props) {
           disabled={disabled}
           size="small"
           fullWidth
-          InputLabelProps={{ shrink: true }}
+          slotProps={{ inputLabel: { shrink: true } }}
         />
       </Box>
 

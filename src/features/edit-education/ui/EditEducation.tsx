@@ -18,7 +18,10 @@ import CircularProgress from '@mui/material/CircularProgress'
 import type { PersonDetails } from '@entities/person/model/types'
 import type { EducationRecord } from '@entities/education/model/types'
 import { addEducationRecord, deleteEducationRecord } from '@shared/api/persons.api'
-import { educationRecordSchema, type EducationRecordFormValues } from '../model/schema'
+import { z } from 'zod'
+import { educationRecordSchema } from '../model/schema'
+
+type EducationFormValues = z.infer<typeof educationRecordSchema>
 
 interface Props {
   person: PersonDetails
@@ -34,18 +37,18 @@ export default function EditEducation({ person }: Props) {
     handleSubmit,
     reset: resetForm,
     formState: { errors },
-  } = useForm<EducationRecordFormValues>({
+  } = useForm<EducationFormValues>({
     resolver: zodResolver(educationRecordSchema),
     defaultValues: {
       institution: '',
       degree: '',
-      startYear: new Date().getFullYear(),
-      endYear: new Date().getFullYear(),
+      startYear: 2020,
+      endYear: 2024,
     },
   })
 
   const addMutation = useMutation({
-    mutationFn: (data: EducationRecordFormValues) => addEducationRecord(person.id, data),
+    mutationFn: (data: EducationFormValues) => addEducationRecord(person.id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['person', person.id] })
       setShowForm(false)
@@ -61,7 +64,7 @@ export default function EditEducation({ person }: Props) {
     },
   })
 
-  const onSubmit = (data: EducationRecordFormValues) => {
+  const onSubmit = (data: EducationFormValues) => {
     addMutation.mutate(data)
   }
 
@@ -126,7 +129,7 @@ export default function EditEducation({ person }: Props) {
               <TextField
                 label="Год начала"
                 type="number"
-                {...register('startYear')}
+                {...register('startYear', { valueAsNumber: true })}
                 error={!!errors.startYear}
                 helperText={errors.startYear?.message}
                 size="small"
@@ -135,7 +138,7 @@ export default function EditEducation({ person }: Props) {
               <TextField
                 label="Год окончания"
                 type="number"
-                {...register('endYear')}
+                {...register('endYear', { valueAsNumber: true })}
                 error={!!errors.endYear}
                 helperText={errors.endYear?.message}
                 size="small"

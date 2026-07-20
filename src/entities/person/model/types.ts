@@ -1,3 +1,4 @@
+import type { Appeal } from '@entities/appeal/model/types'
 import type { FamilyMember } from '@entities/family/model/types'
 import type { EducationRecord } from '@entities/education/model/types'
 import type { EmploymentRecord } from '@entities/employment/model/types'
@@ -24,4 +25,5 @@ export interface PersonDetails extends PersonSummary {
   education: EducationRecord[]
   employment: EmploymentRecord[]
   housing: HousingRecord[]
+  appeals: Appeal[]
 }
