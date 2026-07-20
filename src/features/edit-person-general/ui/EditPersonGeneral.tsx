@@ -17,7 +17,7 @@ import { updatePerson } from '@shared/api/persons.api'
 import { z } from 'zod'
 import { personGeneralSchema } from '../model/schema'
 
-type PersonGeneralFormValues = z.infer<typeof personGeneralSchema>
+type PersonGeneralFormValues = z.input<typeof personGeneralSchema>
 
 const STATUS_OPTIONS = [
   { value: 'active', label: 'Активен' },

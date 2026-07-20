@@ -129,7 +129,7 @@ export default function EditEducation({ person }: Props) {
               <TextField
                 label="Год начала"
                 type="number"
-                {...register('startYear')}
+                {...register('startYear', { valueAsNumber: true })}
                 error={!!errors.startYear}
                 helperText={errors.startYear?.message}
                 size="small"
@@ -138,7 +138,7 @@ export default function EditEducation({ person }: Props) {
               <TextField
                 label="Год окончания"
                 type="number"
-                {...register('endYear')}
+                {...register('endYear', { valueAsNumber: true })}
                 error={!!errors.endYear}
                 helperText={errors.endYear?.message}
                 size="small"
