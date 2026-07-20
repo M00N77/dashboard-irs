@@ -45,7 +45,7 @@ export default function EditFamily({ person }: Props) {
   } = useForm<FamilyMemberFormValues>({
     resolver: zodResolver(familyMemberSchema),
     defaultValues: {
-      relation: 'spouse',
+      relation: '',
       firstName: '',
       lastName: '',
       birthDate: '',
@@ -158,7 +158,7 @@ export default function EditFamily({ person }: Props) {
               helperText={errors.birthDate?.message}
               size="small"
               fullWidth
-              InputLabelProps={{ shrink: true }}
+              slotProps={{ inputLabel: { shrink: true } }}
             />
           </DialogContent>
           <DialogActions>
