@@ -90,6 +90,8 @@ export default function EditHousing({ person }: Props) {
           select
           label="Тип жилья"
           {...register('type')}
+          error={!!errors.type}
+          helperText={errors.type?.message}
           disabled={disabled}
           size="small"
           fullWidth
@@ -104,6 +106,8 @@ export default function EditHousing({ person }: Props) {
           select
           label="Форма собственности"
           {...register('ownershipType')}
+          error={!!errors.ownershipType}
+          helperText={errors.ownershipType?.message}
           disabled={disabled}
           size="small"
           fullWidth
@@ -119,7 +123,7 @@ export default function EditHousing({ person }: Props) {
       <TextField
         label="Площадь (м²)"
         type="number"
-        {...register('area')}
+        {...register('area', { valueAsNumber: true })}
         error={!!errors.area}
         helperText={errors.area?.message}
         disabled={disabled}

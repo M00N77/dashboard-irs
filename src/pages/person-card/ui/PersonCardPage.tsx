@@ -15,12 +15,14 @@ import EditPersonGeneral from '@features/edit-person-general/ui/EditPersonGenera
 import EditFamily from '@features/edit-family/ui/EditFamily'
 import EditEducation from '@features/edit-education/ui/EditEducation'
 import EditHousing from '@features/edit-housing/ui/EditHousing'
+import EditAppeal from '@features/edit-appeal/ui/EditAppeal'
 
 const TABS = [
   { value: 'general', label: 'Общие сведения' },
   { value: 'family', label: 'Семья' },
   { value: 'education', label: 'Образование' },
   { value: 'housing', label: 'Жильё' },
+  { value: 'appeals', label: 'Обращения' },
 ]
 
 function calculateAge(birthDate: string): number {
@@ -58,8 +60,10 @@ export default function PersonCardPage() {
     return (
       <Container maxWidth="xl">
         <Box sx={{ py: 3 }}>
-          <Skeleton variant="text" width={200} height={40} />
-          <Skeleton variant="rectangular" width="100%" height={180} sx={{ mt: 2 }} />
+          <Box sx={{ minHeight: 64, display: 'flex', alignItems: 'center' }}>
+            <Skeleton variant="rectangular" width={200} height={40} />
+          </Box>
+          <Skeleton variant="rectangular" width="100%" height={140} sx={{ mt: 2 }} />
           <Skeleton variant="rectangular" width="100%" height={48} sx={{ mt: 2 }} />
           <Skeleton variant="rectangular" width="100%" height={400} sx={{ mt: 2 }} />
         </Box>
@@ -105,9 +109,11 @@ export default function PersonCardPage() {
         </Button>
 
         <Paper sx={{ p: 3, mb: 3 }}>
-          <Typography variant="h4" sx={{ mb: 1 }}>
-            {person.lastName} {person.firstName} {person.middleName}
-          </Typography>
+          <Box sx={{ minHeight: 64, display: 'flex', alignItems: 'center' }}>
+            <Typography variant="h4" sx={{ lineHeight: 1.2 }}>
+              {person.lastName} {person.firstName} {person.middleName}
+            </Typography>
+          </Box>
           <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
             <Typography variant="body1">
               {genderLabel(person.gender)}, {age} лет
@@ -124,7 +130,7 @@ export default function PersonCardPage() {
         </Paper>
 
         <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-          <Tabs value={activeTab} onChange={handleTabChange}>
+          <Tabs value={activeTab} onChange={handleTabChange} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>
             {TABS.map((tab) => (
               <Tab key={tab.value} value={tab.value} label={tab.label} />
             ))}
@@ -135,6 +141,7 @@ export default function PersonCardPage() {
         {activeTab === 'family' && <EditFamily person={person} />}
         {activeTab === 'education' && <EditEducation person={person} />}
         {activeTab === 'housing' && <EditHousing person={person} />}
+        {activeTab === 'appeals' && <EditAppeal person={person} />}
       </Box>
     </Container>
   )
