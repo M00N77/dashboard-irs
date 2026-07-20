@@ -3,13 +3,13 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ThemeProvider } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { theme } from './theme'
 import ErrorBoundary from '@shared/ui/error-boundary/ErrorBoundary'
 import AppLayout from '@widgets/layout/ui/AppLayout'
+import RegistryPage from '@pages/registry/ui/RegistryPage'
 
 const DashboardPage = lazy(() => import('@pages/dashboard/ui/DashboardPage'))
-const RegistryPage = lazy(() => import('@pages/registry/ui/RegistryPage'))
 const PersonCardPage = lazy(() => import('@pages/person-card/ui/PersonCardPage'))
 
 const queryClient = new QueryClient({
@@ -31,7 +31,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route element={<AppLayout />}>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route index element={<RegistryPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/registry" element={<RegistryPage />} />
             <Route path="/registry/:id" element={<PersonCardPage />} />
