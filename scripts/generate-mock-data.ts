@@ -3,6 +3,7 @@ import { writeFileSync, existsSync, mkdirSync } from 'fs'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
 import type { PersonDetails } from '../src/entities/person/model/types'
+import type { Appeal } from '../src/entities/appeal/model/types'
 import type { FamilyMember } from '../src/entities/family/model/types'
 import type { EducationRecord } from '../src/entities/education/model/types'
 import type { EmploymentRecord } from '../src/entities/employment/model/types'
@@ -16,6 +17,13 @@ const regions = [
   'Москва', 'Московская область', 'Санкт-Петербург', 'Ленинградская область',
   'Краснодарский край', 'Республика Татарстан', 'Свердловская область',
   'Ростовская область', 'Республика Башкортостан', 'Новосибирская область',
+]
+
+const appealCategories = [
+  'ЖКХ',
+  'обращение по ТКО',
+  'жалоба',
+  'запрос информации',
 ]
 
 function generateFamilyMember(personId: string): FamilyMember {
@@ -66,6 +74,27 @@ function generateHousingRecord(personId: string): HousingRecord {
   }
 }
 
+function generateAppeal(personId: string): Appeal {
+  const registeredAt = faker.date.past({ years: 2 })
+  const dueDate = new Date(registeredAt)
+  dueDate.setDate(dueDate.getDate() + faker.number.int({ min: 7, max: 60 }))
+  return {
+    id: faker.string.uuid(),
+    personId,
+    source: faker.helpers.arrayElement(['phone', 'email', 'portal', 'paper', 'in-person']) as Appeal['source'],
+    category: faker.helpers.arrayElement(appealCategories),
+    registeredAt: registeredAt.toISOString().split('T')[0],
+    status: faker.helpers.arrayElement(['new', 'in-progress', 'resolved', 'rejected', 'redirected']) as Appeal['status'],
+    responsible: faker.person.fullName(),
+    dueDate: dueDate.toISOString().split('T')[0],
+    resolutionText: faker.datatype.boolean(0.5) ? faker.lorem.sentence() : undefined,
+    attachments: Array.from(
+      { length: faker.number.int({ min: 0, max: 3 }) },
+      () => faker.system.fileName(),
+    ),
+  }
+}
+
 function generatePerson(): PersonDetails {
   const id = faker.string.uuid()
   const gender = faker.helpers.arrayElement(['male', 'female']) as 'male' | 'female'
@@ -77,6 +106,7 @@ function generatePerson(): PersonDetails {
   const familyCount = faker.number.int({ min: 0, max: 4 })
   const educationCount = faker.number.int({ min: 1, max: 3 })
   const employmentCount = faker.number.int({ min: 0, max: 2 })
+  const appealsCount = faker.number.int({ min: 0, max: 3 })
 
   return {
     id,
@@ -96,6 +126,7 @@ function generatePerson(): PersonDetails {
     education: Array.from({ length: educationCount }, () => generateEducationRecord(id)),
     employment: Array.from({ length: employmentCount }, () => generateEmploymentRecord(id)),
     housing: [generateHousingRecord(id)],
+    appeals: Array.from({ length: appealsCount }, () => generateAppeal(id)),
   }
 }
 
