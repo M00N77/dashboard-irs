@@ -86,7 +86,7 @@ function toPersonSummary(details: PersonDetails): PersonSummary {
 }
 
 function randomDelay(): Promise<void> {
-  return delay(Math.floor(Math.random() * 701) + 100)
+  return delay(Math.floor(Math.random() * 101) + 50)
 }
 
 const mutationDelay = () => delay(400)
