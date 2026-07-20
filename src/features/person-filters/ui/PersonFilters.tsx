@@ -23,7 +23,7 @@ const REGION_OPTIONS = [
 ]
 
 export default function PersonFilters() {
-  const { get, set } = useUrlState()
+  const { get, set, resetAll } = useUrlState()
   const searchFromUrl = get('search', '')
   const statusFromUrl = get('status', '')
   const regionFromUrl = get('region', '')
@@ -47,11 +47,7 @@ export default function PersonFilters() {
 
   const handleReset = () => {
     setSearchDraft('')
-    set('search', '')
-    set('status', '')
-    set('region', '')
-    set('sortBy', '')
-    set('sortOrder', '')
+    resetAll()
   }
 
   return (

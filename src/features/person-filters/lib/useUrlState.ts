@@ -3,6 +3,8 @@ import { useSearchParams } from 'react-router-dom'
 
 type SupportedKey = 'page' | 'limit' | 'search' | 'status' | 'region' | 'sortBy' | 'sortOrder'
 
+const FILTER_KEYS: SupportedKey[] = ['search', 'status', 'region', 'sortBy', 'sortOrder']
+
 export function useUrlState() {
   const [searchParams, setSearchParams] = useSearchParams()
 
@@ -31,5 +33,16 @@ export function useUrlState() {
     [setSearchParams],
   )
 
-  return { get, set, searchParams }
+  const resetAll = useCallback(() => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev)
+      for (const key of FILTER_KEYS) {
+        next.delete(key)
+      }
+      next.set('page', '1')
+      return next
+    })
+  }, [setSearchParams])
+
+  return { get, set, resetAll, searchParams }
 }
