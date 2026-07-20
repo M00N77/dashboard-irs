@@ -38,6 +38,8 @@ function randomDelay(): Promise<void> {
   return delay(Math.floor(Math.random() * 701) + 100)
 }
 
+const mutationDelay = () => delay(400)
+
 export const handlers = [
   http.get('/api/persons', async ({ request }) => {
     if (Math.random() < 0.05) {
@@ -139,5 +141,43 @@ export const handlers = [
       byRegion,
       byAgeGroup,
     })
+  }),
+
+  // Mutation handlers — these return the sent data but do NOT persist to disk.
+  // After invalidateQueries the UI will fetch old data from the in-memory cache.
+  // This is expected behavior for the mock environment.
+
+  http.put('/api/persons/:id', async ({ params, request }) => {
+    await mutationDelay()
+    const body = (await request.json()) as Record<string, unknown>
+    return HttpResponse.json({ id: params.id, ...body })
+  }),
+
+  http.post('/api/persons/:id/family', async ({ request }) => {
+    await mutationDelay()
+    const body = (await request.json()) as Record<string, unknown>
+    return HttpResponse.json(
+      { id: crypto.randomUUID(), personId: '', ...body },
+      { status: 201 },
+    )
+  }),
+
+  http.delete('/api/persons/:id/family/:memberId', async () => {
+    await mutationDelay()
+    return HttpResponse.json(null, { status: 204 })
+  }),
+
+  http.post('/api/persons/:id/education', async ({ request }) => {
+    await mutationDelay()
+    const body = (await request.json()) as Record<string, unknown>
+    return HttpResponse.json(
+      { id: crypto.randomUUID(), personId: '', ...body },
+      { status: 201 },
+    )
+  }),
+
+  http.delete('/api/persons/:id/education/:recordId', async () => {
+    await mutationDelay()
+    return HttpResponse.json(null, { status: 204 })
   }),
 ]
