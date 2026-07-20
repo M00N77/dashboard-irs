@@ -1,5 +1,7 @@
 import { apiClient } from './client'
 import type { PersonSummary, PersonDetails } from '@entities/person/model/types'
+import type { FamilyMember } from '@entities/family/model/types'
+import type { EducationRecord } from '@entities/education/model/types'
 
 export interface GetPersonsParams {
   page: number
@@ -31,4 +33,53 @@ export function getPersons(params: GetPersonsParams): Promise<GetPersonsResponse
 
 export function getPersonById(id: string): Promise<PersonDetails> {
   return apiClient<PersonDetails>(`/api/persons/${id}`)
+}
+
+export function updatePerson(id: string, data: Partial<PersonDetails>): Promise<PersonDetails> {
+  return apiClient<PersonDetails>(`/api/persons/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  })
+}
+
+export function addFamilyMember(
+  id: string,
+  data: {
+    relation: FamilyMember['relation']
+    firstName: string
+    lastName: string
+    birthDate: string
+  },
+): Promise<FamilyMember> {
+  return apiClient<FamilyMember>(`/api/persons/${id}/family`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+}
+
+export function deleteFamilyMember(id: string, memberId: string): Promise<void> {
+  return apiClient<void>(`/api/persons/${id}/family/${memberId}`, {
+    method: 'DELETE',
+  })
+}
+
+export function addEducationRecord(
+  id: string,
+  data: {
+    institution: string
+    degree: string
+    startYear: number
+    endYear: number
+  },
+): Promise<EducationRecord> {
+  return apiClient<EducationRecord>(`/api/persons/${id}/education`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+}
+
+export function deleteEducationRecord(id: string, recordId: string): Promise<void> {
+  return apiClient<void>(`/api/persons/${id}/education/${recordId}`, {
+    method: 'DELETE',
+  })
 }
