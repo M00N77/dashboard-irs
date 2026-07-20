@@ -1,5 +1,7 @@
 import { http, HttpResponse, delay } from 'msw'
 import type { PersonDetails, PersonSummary } from '@entities/person/model/types'
+import type { FamilyMember } from '@entities/family/model/types'
+import type { EducationRecord } from '@entities/education/model/types'
 import type { Appeal } from '@entities/appeal/model/types'
 import type { StatsResponse } from '@shared/api/stats.api'
 import { getCachedPersons, getCachedPersonsSync } from '@shared/api/mock-data/cache'
@@ -185,14 +187,14 @@ export const handlers = [
 
   http.post('/api/persons/:id/family', async ({ params, request }) => {
     await mutationDelay()
-    const body = (await request.json()) as Record<string, unknown>
+    const body = (await request.json()) as { relation: FamilyMember['relation']; firstName: string; lastName: string; birthDate: string }
     const personId = parseInt(params.id as string, 10)
-    const newMember = { id: Date.now(), personId, ...body }
+    const newMember: FamilyMember = { id: Date.now(), personId, ...body }
     const idx = findPersonIndex(personId)
     if (idx !== null) {
       const persons = getCachedPersonsSync()
       if (persons) {
-        persons[idx].family.push(newMember as never)
+        persons[idx].family.push(newMember)
       }
     }
     return HttpResponse.json(newMember, { status: 201 })
@@ -216,14 +218,14 @@ export const handlers = [
 
   http.post('/api/persons/:id/education', async ({ params, request }) => {
     await mutationDelay()
-    const body = (await request.json()) as Record<string, unknown>
+    const body = (await request.json()) as { institution: string; degree: string; startYear: number; endYear: number }
     const personId = parseInt(params.id as string, 10)
-    const newRecord = { id: Date.now(), personId, ...body }
+    const newRecord: EducationRecord = { id: Date.now(), personId, ...body }
     const idx = findPersonIndex(personId)
     if (idx !== null) {
       const persons = getCachedPersonsSync()
       if (persons) {
-        persons[idx].education.push(newRecord as never)
+        persons[idx].education.push(newRecord)
       }
     }
     return HttpResponse.json(newRecord, { status: 201 })
