@@ -16,19 +16,9 @@ import type { PersonDetails } from '@entities/person/model/types'
 import { updatePerson } from '@shared/api/persons.api'
 import { z } from 'zod'
 import { personGeneralSchema } from '../model/schema'
+import { REGIONS, PERSON_STATUS_OPTIONS } from '@shared/constants'
 
 type PersonGeneralFormValues = z.input<typeof personGeneralSchema>
-
-const STATUS_OPTIONS = [
-  { value: 'active', label: 'Активен' },
-  { value: 'archived', label: 'Архивирован' },
-]
-
-const REGIONS = [
-  'Москва', 'Московская область', 'Санкт-Петербург', 'Ленинградская область',
-  'Краснодарский край', 'Республика Татарстан', 'Свердловская область',
-  'Ростовская область', 'Республика Башкортостан', 'Новосибирская область',
-]
 
 interface Props {
   person: PersonDetails
@@ -188,7 +178,7 @@ export default function EditPersonGeneral({ person }: Props) {
           size="small"
           fullWidth
         >
-          {STATUS_OPTIONS.map((opt) => (
+          {PERSON_STATUS_OPTIONS.map((opt) => (
             <MenuItem key={opt.value} value={opt.value}>
               {opt.label}
             </MenuItem>

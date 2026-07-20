@@ -4,17 +4,12 @@ import TextField from '@mui/material/TextField'
 import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
 import { useUrlState } from '../lib/useUrlState'
+import { REGIONS } from '@shared/constants'
 
 const STATUS_OPTIONS = [
   { value: '', label: 'Все' },
   { value: 'active', label: 'Активные' },
   { value: 'archived', label: 'Архивные' },
-]
-
-const REGIONS = [
-  'Москва', 'Московская область', 'Санкт-Петербург', 'Ленинградская область',
-  'Краснодарский край', 'Республика Татарстан', 'Свердловская область',
-  'Ростовская область', 'Республика Башкортостан', 'Новосибирская область',
 ]
 
 const REGION_OPTIONS = [
