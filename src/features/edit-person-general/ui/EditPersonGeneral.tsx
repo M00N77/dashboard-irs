@@ -120,7 +120,7 @@ export default function EditPersonGeneral({ person }: Props) {
           disabled={disabled}
           size="small"
           fullWidth
-          InputLabelProps={{ shrink: true }}
+          slotProps={{ inputLabel: { shrink: true } }}
         />
       </Box>
 

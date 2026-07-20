@@ -2,6 +2,7 @@ import { apiClient } from './client'
 import type { PersonSummary, PersonDetails } from '@entities/person/model/types'
 import type { FamilyMember } from '@entities/family/model/types'
 import type { EducationRecord } from '@entities/education/model/types'
+import type { Appeal } from '@entities/appeal/model/types'
 
 export interface GetPersonsParams {
   page: number
@@ -80,6 +81,41 @@ export function addEducationRecord(
 
 export function deleteEducationRecord(id: string, recordId: string): Promise<void> {
   return apiClient<void>(`/api/persons/${id}/education/${recordId}`, {
+    method: 'DELETE',
+  })
+}
+
+export function addAppeal(
+  id: string,
+  data: {
+    source: Appeal['source']
+    category: string
+    registeredAt: string
+    status: Appeal['status']
+    responsible: string
+    dueDate: string
+    resolutionText?: string
+  },
+): Promise<Appeal> {
+  return apiClient<Appeal>(`/api/persons/${id}/appeals`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+}
+
+export function updateAppealStatus(
+  id: string,
+  appealId: string,
+  status: Appeal['status'],
+): Promise<Appeal> {
+  return apiClient<Appeal>(`/api/persons/${id}/appeals/${appealId}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ status }),
+  })
+}
+
+export function deleteAppeal(id: string, appealId: string): Promise<void> {
+  return apiClient<void>(`/api/persons/${id}/appeals/${appealId}`, {
     method: 'DELETE',
   })
 }

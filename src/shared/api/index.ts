@@ -7,6 +7,9 @@ export {
   deleteFamilyMember,
   addEducationRecord,
   deleteEducationRecord,
+  addAppeal,
+  updateAppealStatus,
+  deleteAppeal,
 } from './persons.api'
 export type { GetPersonsParams, GetPersonsResponse } from './persons.api'
 export { getStats } from './stats.api'

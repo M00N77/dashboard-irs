@@ -6,7 +6,7 @@ import PersonTableWidget from '@widgets/person-table/ui/PersonTableWidget'
 
 export default function RegistryPage() {
   return (
-    <Container maxWidth="xl">
+    <Container maxWidth="xl" sx={{ px: { xs: 0, sm: 3 } }}>
       <Box sx={{ py: 3 }}>
         <Typography variant="h4" sx={{ mb: 2 }}>
           Картотека
