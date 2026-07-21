@@ -1,6 +1,6 @@
 # IRS Dashboard (Individual Registration System)
 
-[![Deploy](https://img.shields.io/badge/Deploy-Vercel-000?logo=vercel)](https://dashboard-irs.vercel.app)
+[Demo](https://dashboard-irs.vercel.app)
 
 <<<<<<< Updated upstream
 Современная веб-платформа для управления обращениями и учёта данных граждан, разработанная на основе анализа портала ППК РЭО. Проект трансформирует концепцию тяжёлых корпоративных СЭД в быстрый, адаптивный SPA с фокусом на UX и производительность.
