@@ -13,6 +13,14 @@ import Tab from '@mui/material/Tab'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { usePersonQuery } from '@entities/person/model/usePersonQuery'
 import { calculateAge, genderLabel } from '@shared/lib/date'
+
+function pluralYears(n: number): string {
+  const mod10 = n % 10
+  const mod100 = n % 100
+  if (mod10 === 1 && mod100 !== 11) return 'год'
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return 'года'
+  return 'лет'
+}
 import EditPersonGeneral from '@features/edit-person-general/ui/EditPersonGeneral'
 
 const EditFamily = lazy(() => import('@features/edit-family/ui/EditFamily'))
@@ -118,7 +126,7 @@ export default function PersonCardPage() {
           </Typography>
           <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
             <Typography variant="body1">
-              {genderLabel(person.gender)}, {age} лет
+              {genderLabel(person.gender)}, {age} {pluralYears(age)}
             </Typography>
             <Chip
               label={person.status === 'active' ? 'Активен' : 'Архивирован'}
