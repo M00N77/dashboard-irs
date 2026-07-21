@@ -16,7 +16,9 @@ import type { PersonDetails } from '@entities/person/model/types'
 import { updatePerson } from '@shared/api/persons.api'
 import { z } from 'zod'
 import { personGeneralSchema } from '../model/schema'
-import { REGIONS, PERSON_STATUS_OPTIONS } from '@shared/constants'
+import { PERSON_STATUS_LABELS, REGIONS, toOptions } from '@shared/config/dictionaries'
+
+const PERSON_STATUS_OPTIONS = toOptions(PERSON_STATUS_LABELS)
 
 type PersonGeneralFormValues = z.input<typeof personGeneralSchema>
 

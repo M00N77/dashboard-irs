@@ -10,18 +10,10 @@ import CircularProgress from '@mui/material/CircularProgress'
 import type { PersonDetails } from '@entities/person/model/types'
 import { updatePerson } from '@shared/api/persons.api'
 import { housingRecordSchema, type HousingRecordFormValues } from '../model/schema'
+import { HOUSING_TYPE_LABELS, OWNERSHIP_LABELS, toOptions } from '@shared/config/dictionaries'
 
-const TYPE_OPTIONS = [
-  { value: 'apartment', label: 'Квартира' },
-  { value: 'house', label: 'Дом' },
-  { value: 'other', label: 'Другое' },
-]
-
-const OWNERSHIP_OPTIONS = [
-  { value: 'owned', label: 'Собственность' },
-  { value: 'rented', label: 'Аренда' },
-  { value: 'social', label: 'Социальный найм' },
-]
+const TYPE_OPTIONS = toOptions(HOUSING_TYPE_LABELS)
+const OWNERSHIP_OPTIONS = toOptions(OWNERSHIP_LABELS)
 
 interface Props {
   person: PersonDetails

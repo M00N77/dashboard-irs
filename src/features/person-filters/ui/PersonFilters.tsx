@@ -4,7 +4,7 @@ import TextField from '@mui/material/TextField'
 import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
 import { useUrlState } from '../lib/useUrlState'
-import { REGIONS } from '@shared/constants'
+import { REGIONS } from '@shared/config/dictionaries'
 
 const STATUS_OPTIONS = [
   { value: '', label: 'Все' },

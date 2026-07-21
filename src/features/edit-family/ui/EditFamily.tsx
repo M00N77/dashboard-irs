@@ -22,15 +22,9 @@ import { addFamilyMember, deleteFamilyMember } from '@shared/api/persons.api'
 import { z } from 'zod'
 import { familyMemberSchema } from '../model/schema'
 import { formatDate } from '@shared/lib/date'
+import { FAMILY_RELATION_LABELS as RELATION_LABELS } from '@shared/config/dictionaries'
 
 type FamilyFormValues = z.infer<typeof familyMemberSchema>
-
-const RELATION_LABELS: Record<FamilyMember['relation'], string> = {
-  spouse: 'Супруг(а)',
-  child: 'Ребёнок',
-  parent: 'Родитель',
-  sibling: 'Брат/Сестра',
-}
 
 interface Props {
   person: PersonDetails
