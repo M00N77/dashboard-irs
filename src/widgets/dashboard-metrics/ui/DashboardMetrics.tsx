@@ -17,7 +17,7 @@ interface DashboardMetricsProps {
 const metricCards = [
   { label: 'Всего граждан', field: 'totalPersons' as const, icon: PeopleIcon },
   { label: 'Всего обращений', field: 'totalAppeals' as const, icon: ForumIcon },
-  { label: 'Активные обращения', field: 'activePersons' as const, icon: PlaylistAddCheckIcon },
+  { label: 'Активные обращения', field: 'activeAppeals' as const, icon: PlaylistAddCheckIcon },
 ]
 
 export default function DashboardMetrics({ data, loading }: DashboardMetricsProps) {

@@ -32,9 +32,9 @@ function buildStats(persons: PersonDetails[]): StatsResponse {
   }
 
   let totalAppeals = 0
+  let activeAppeals = 0
   const byStatus: Record<string, number> = {}
   const byCategory: Record<string, number> = {}
-  const activePersonIds = new Set<number>()
 
   for (const p of persons) {
     for (const a of p.appeals) {
@@ -45,13 +45,13 @@ function buildStats(persons: PersonDetails[]): StatsResponse {
       byCategory[catKey] = (byCategory[catKey] || 0) + 1
 
       if (a.status === 'new' || a.status === 'in-progress') {
-        activePersonIds.add(p.id)
+        activeAppeals++
       }
     }
   }
 
   return {
-    summary: { totalPersons, totalAppeals, activePersons: activePersonIds.size },
+    summary: { totalPersons, totalAppeals, activeAppeals },
     personStats: { genderDistribution: { male, female }, ageGroups },
     appealStats: { byStatus, byCategory },
   }

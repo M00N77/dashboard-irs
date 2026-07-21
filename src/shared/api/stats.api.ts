@@ -3,7 +3,7 @@ import { apiClient } from './client'
 export interface StatsSummary {
   totalPersons: number
   totalAppeals: number
-  activePersons: number
+  activeAppeals: number
 }
 
 export interface PersonStats {
