@@ -1,6 +1,6 @@
 export interface EmploymentRecord {
-  id: string
-  personId: string
+  id: number
+  personId: number
   company: string
   position: string
   startDate: string

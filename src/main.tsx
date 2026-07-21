@@ -3,10 +3,13 @@ import { createRoot } from 'react-dom/client'
 import App from './app/App'
 
 async function start() {
-  if (import.meta.env.DEV) {
-    const { worker } = await import('./shared/api/mocks/browser')
-    await worker.start({ onUnhandledRequest: 'bypass' })
-  }
+  const { worker } = await import('./shared/api/mocks/browser')
+
+  await worker.start({ onUnhandledRequest: 'bypass' })
+
+  import('@shared/api/mock-data/cache')
+    .then(({ getCachedPersons }) => getCachedPersons())
+    .catch(console.error)
 
   createRoot(document.getElementById('root')!).render(
     <StrictMode>

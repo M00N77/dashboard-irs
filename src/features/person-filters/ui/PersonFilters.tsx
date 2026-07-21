@@ -1,20 +1,15 @@
 import { useState, useEffect, useRef } from 'react'
-import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
 import { useUrlState } from '../lib/useUrlState'
+import { REGIONS } from '@shared/config/dictionaries'
 
 const STATUS_OPTIONS = [
   { value: '', label: 'Все' },
   { value: 'active', label: 'Активные' },
   { value: 'archived', label: 'Архивные' },
-]
-
-const REGIONS = [
-  'Москва', 'Московская область', 'Санкт-Петербург', 'Ленинградская область',
-  'Краснодарский край', 'Республика Татарстан', 'Свердловская область',
-  'Ростовская область', 'Республика Башкортостан', 'Новосибирская область',
 ]
 
 const REGION_OPTIONS = [
@@ -51,14 +46,14 @@ export default function PersonFilters() {
   }
 
   return (
-    <Box sx={{ display: 'flex', gap: 2, mb: 2, alignItems: 'center' }}>
+    <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} useFlexGap sx={{ mb: 2, flexWrap: 'wrap', alignItems: { xs: 'stretch', md: 'center' } }}>
       <TextField
         size="small"
         label="Поиск"
         placeholder="ФИО..."
         value={searchDraft}
         onChange={(e) => handleSearchChange(e.target.value)}
-        sx={{ minWidth: 240 }}
+        sx={{ minWidth: 240, flex: { xs: '1 1 auto', md: '0 0 auto' } }}
       />
       <TextField
         select
@@ -66,7 +61,7 @@ export default function PersonFilters() {
         label="Статус"
         value={statusFromUrl}
         onChange={(e) => set('status', e.target.value)}
-        sx={{ minWidth: 160 }}
+        sx={{ minWidth: 160, flex: { xs: '1 1 auto', md: '0 0 auto' } }}
       >
         {STATUS_OPTIONS.map((opt) => (
           <MenuItem key={opt.value} value={opt.value}>
@@ -80,7 +75,7 @@ export default function PersonFilters() {
         label="Регион"
         value={regionFromUrl}
         onChange={(e) => set('region', e.target.value)}
-        sx={{ minWidth: 200 }}
+        sx={{ minWidth: 200, flex: { xs: '1 1 auto', md: '0 0 auto' } }}
       >
         {REGION_OPTIONS.map((opt) => (
           <MenuItem key={opt.value} value={opt.value}>
@@ -91,6 +86,6 @@ export default function PersonFilters() {
       <Button variant="outlined" onClick={handleReset}>
         Сбросить фильтры
       </Button>
-    </Box>
+    </Stack>
   )
 }

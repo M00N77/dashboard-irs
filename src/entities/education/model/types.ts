@@ -1,6 +1,6 @@
 export interface EducationRecord {
-  id: string
-  personId: string
+  id: number
+  personId: number
   institution: string
   degree: string
   startYear: number

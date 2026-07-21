@@ -10,18 +10,10 @@ import CircularProgress from '@mui/material/CircularProgress'
 import type { PersonDetails } from '@entities/person/model/types'
 import { updatePerson } from '@shared/api/persons.api'
 import { housingRecordSchema, type HousingRecordFormValues } from '../model/schema'
+import { HOUSING_TYPE_LABELS, OWNERSHIP_LABELS, toOptions } from '@shared/config/dictionaries'
 
-const TYPE_OPTIONS = [
-  { value: 'apartment', label: 'Квартира' },
-  { value: 'house', label: 'Дом' },
-  { value: 'other', label: 'Другое' },
-]
-
-const OWNERSHIP_OPTIONS = [
-  { value: 'owned', label: 'Собственность' },
-  { value: 'rented', label: 'Аренда' },
-  { value: 'social', label: 'Социальный найм' },
-]
+const TYPE_OPTIONS = toOptions(HOUSING_TYPE_LABELS)
+const OWNERSHIP_OPTIONS = toOptions(OWNERSHIP_LABELS)
 
 interface Props {
   person: PersonDetails
@@ -50,7 +42,7 @@ export default function EditHousing({ person }: Props) {
 
   const mutation = useMutation({
     mutationFn: (data: HousingRecordFormValues) =>
-      updatePerson(person.id, { ...person, housing: [{ ...housing!, ...data }] }),
+      updatePerson(person.id, { housing: [{ ...housing!, ...data }] }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['person', person.id] })
       setIsEditing(false)
@@ -90,6 +82,8 @@ export default function EditHousing({ person }: Props) {
           select
           label="Тип жилья"
           {...register('type')}
+          error={!!errors.type}
+          helperText={errors.type?.message}
           disabled={disabled}
           size="small"
           fullWidth
@@ -104,6 +98,8 @@ export default function EditHousing({ person }: Props) {
           select
           label="Форма собственности"
           {...register('ownershipType')}
+          error={!!errors.ownershipType}
+          helperText={errors.ownershipType?.message}
           disabled={disabled}
           size="small"
           fullWidth
@@ -119,7 +115,7 @@ export default function EditHousing({ person }: Props) {
       <TextField
         label="Площадь (м²)"
         type="number"
-        {...register('area')}
+        {...register('area', { valueAsNumber: true })}
         error={!!errors.area}
         helperText={errors.area?.message}
         disabled={disabled}
