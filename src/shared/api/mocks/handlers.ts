@@ -8,7 +8,7 @@ import { getCachedPersons, getCachedPersonsSync } from '@shared/api/mock-data/ca
 
 let cachedStats: StatsResponse | null = null
 
-function buildStats(persons: PersonDetails[]): StatsResponse {
+export function buildStats(persons: PersonDetails[]): StatsResponse {
   const totalPersons = persons.length
   const male = persons.filter((p) => p.gender === 'male').length
   const female = persons.filter((p) => p.gender === 'female').length
