@@ -23,14 +23,6 @@ function buildStats(persons: PersonDetails[]): StatsResponse {
     ageGroups[group] = (ageGroups[group] || 0) + 1
   }
 
-  const CATEGORY_KEY_MAP: Record<string, string> = {
-    'Обращение по ТКО': 'tko',
-    'ЖКХ': 'jkh',
-    'Жалоба': 'complaint',
-    'Запрос информации': 'info',
-    'Иное': 'other',
-  }
-
   let totalAppeals = 0
   let activeAppeals = 0
   const byStatus: Record<string, number> = {}
@@ -41,8 +33,7 @@ function buildStats(persons: PersonDetails[]): StatsResponse {
       totalAppeals++
       byStatus[a.status] = (byStatus[a.status] || 0) + 1
 
-      const catKey = CATEGORY_KEY_MAP[a.category] || 'other'
-      byCategory[catKey] = (byCategory[catKey] || 0) + 1
+      byCategory[a.category] = (byCategory[a.category] || 0) + 1
 
       if (a.status === 'new' || a.status === 'in-progress') {
         activeAppeals++

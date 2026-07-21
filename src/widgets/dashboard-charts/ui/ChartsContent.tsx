@@ -16,26 +16,11 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import type { AppealStats, PersonStats } from '@shared/api/stats.api'
+import { APPEAL_STATUS_LABELS } from '@shared/config/dictionaries'
 
 interface ChartsContentProps {
   appealStats?: AppealStats
   personStats?: PersonStats
-}
-
-const STATUS_LABELS: Record<string, string> = {
-  new: 'Новый',
-  'in-progress': 'В работе',
-  resolved: 'Решён',
-  rejected: 'Отклонён',
-  redirected: 'Перенаправлен',
-}
-
-const CATEGORY_LABELS: Record<string, string> = {
-  tko: 'ТКО',
-  jkh: 'ЖКХ',
-  complaint: 'Жалоба',
-  info: 'Запрос информации',
-  other: 'Прочее',
 }
 
 export default function ChartsContent({ appealStats, personStats }: ChartsContentProps) {
@@ -51,7 +36,7 @@ export default function ChartsContent({ appealStats, personStats }: ChartsConten
 
   const statusData = appealStats
     ? Object.entries(appealStats.byStatus).map(([key, value]) => ({
-        name: STATUS_LABELS[key] || key,
+        name: APPEAL_STATUS_LABELS[key] || key,
         value,
         color: STATUS_THEME_COLORS[key] || theme.palette.grey[400],
       }))
@@ -59,7 +44,7 @@ export default function ChartsContent({ appealStats, personStats }: ChartsConten
 
   const categoryData = appealStats
     ? Object.entries(appealStats.byCategory).map(([key, value]) => ({
-        name: CATEGORY_LABELS[key] || key,
+        name: key,
         value,
       }))
     : []

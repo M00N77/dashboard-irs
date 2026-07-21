@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker'
+import { REGIONS, APPEAL_CATEGORIES, APPEAL_SOURCES, APPEAL_STATUSES, PERSON_STATUSES, FAMILY_RELATIONS, HOUSING_TYPES, OWNERSHIP_TYPES, EDUCATION_DEGREES, GENDERS } from '../src/shared/config/dictionaries'
 import { writeFileSync, existsSync, mkdirSync } from 'fs'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
@@ -16,25 +17,14 @@ const COUNT = 5000
 let nextPersonId = 1000
 let nextSubId = 1
 
-const regions = [
-  'Москва', 'Московская область', 'Санкт-Петербург', 'Ленинградская область',
-  'Краснодарский край', 'Республика Татарстан', 'Свердловская область',
-  'Ростовская область', 'Республика Башкортостан', 'Новосибирская область',
-]
 
-const appealCategories = [
-  'ЖКХ',
-  'Обращение по ТКО',
-  'Жалоба',
-  'Запрос информации',
-]
 
 function generateFamilyMember(personId: number): FamilyMember {
-  const gender = faker.helpers.arrayElement(['male', 'female']) as 'male' | 'female'
+  const gender = faker.helpers.arrayElement([...GENDERS]) as 'male' | 'female'
   return {
     id: nextSubId++,
     personId,
-    relation: faker.helpers.arrayElement(['spouse', 'child', 'parent', 'sibling']),
+    relation: faker.helpers.arrayElement([...FAMILY_RELATIONS]),
     firstName: faker.person.firstName(gender === 'male' ? 'male' : 'female'),
     lastName: faker.person.lastName(),
     birthDate: faker.date.birthdate({ min: 1, max: 80, mode: 'age' }).toISOString().split('T')[0],
@@ -47,7 +37,7 @@ function generateEducationRecord(personId: number): EducationRecord {
     id: nextSubId++,
     personId,
     institution: faker.company.name() + ' University',
-    degree: faker.helpers.arrayElement(['Bachelor', 'Master', 'PhD', 'Associate']),
+    degree: faker.helpers.arrayElement([...EDUCATION_DEGREES]),
     startYear,
     endYear: startYear + faker.number.int({ min: 2, max: 6 }),
   }
@@ -71,9 +61,9 @@ function generateHousingRecord(personId: number): HousingRecord {
     id: nextSubId++,
     personId,
     address: faker.location.streetAddress(true),
-    type: faker.helpers.arrayElement(['apartment', 'house', 'other']),
+    type: faker.helpers.arrayElement([...HOUSING_TYPES]),
     area: faker.number.float({ min: 20, max: 200, fractionDigits: 1 }),
-    ownershipType: faker.helpers.arrayElement(['owned', 'rented', 'social']),
+    ownershipType: faker.helpers.arrayElement([...OWNERSHIP_TYPES]),
   }
 }
 
@@ -84,10 +74,10 @@ function generateAppeal(personId: number): Appeal {
   return {
     id: nextSubId++,
     personId,
-    source: faker.helpers.arrayElement(['phone', 'email', 'portal', 'paper', 'in-person']) as Appeal['source'],
-    category: faker.helpers.arrayElement(appealCategories),
+    source: faker.helpers.arrayElement([...APPEAL_SOURCES]) as Appeal['source'],
+    category: faker.helpers.arrayElement([...APPEAL_CATEGORIES]),
     registeredAt: registeredAt.toISOString().split('T')[0],
-    status: faker.helpers.arrayElement(['new', 'in-progress', 'resolved', 'rejected', 'redirected']) as Appeal['status'],
+    status: faker.helpers.arrayElement([...APPEAL_STATUSES]) as Appeal['status'],
     responsible: faker.person.fullName(),
     dueDate: dueDate.toISOString().split('T')[0],
     resolutionText: faker.datatype.boolean(0.5) ? faker.lorem.sentence() : undefined,
@@ -100,7 +90,7 @@ function generateAppeal(personId: number): Appeal {
 
 function generatePerson(): PersonDetails {
   const id = nextPersonId++
-  const gender = faker.helpers.arrayElement(['male', 'female']) as 'male' | 'female'
+  const gender = faker.helpers.arrayElement([...GENDERS]) as 'male' | 'female'
   const firstName = faker.person.firstName(gender === 'male' ? 'male' : 'female')
   const lastName = faker.person.lastName()
   const middleName = faker.person.middleName(gender === 'male' ? 'male' : 'female')
@@ -118,8 +108,8 @@ function generatePerson(): PersonDetails {
     middleName,
     birthDate,
     gender,
-    status: faker.helpers.arrayElement(['active', 'archived']),
-    region: faker.helpers.arrayElement(regions),
+    status: faker.helpers.arrayElement([...PERSON_STATUSES]),
+    region: faker.helpers.arrayElement([...REGIONS]),
     registryCode: `REG-2026-${id.toString().padStart(5, '0')}`,
     passportSeries: faker.string.numeric({ length: 4 }),
     passportNumber: faker.string.numeric({ length: 6 }),
