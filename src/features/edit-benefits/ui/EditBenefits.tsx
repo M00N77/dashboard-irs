@@ -61,7 +61,7 @@ export default function EditBenefits({ person }: Props) {
           <ListItem
             key={b.id}
             secondaryAction={
-              <IconButton edge="end" onClick={() => setDeleteTarget(b)}><DeleteIcon /></IconButton>
+              <IconButton edge="end" aria-label="Удалить" onClick={() => setDeleteTarget(b)}><DeleteIcon /></IconButton>
             }
           >
             <ListItemText

@@ -61,7 +61,7 @@ export default function EditDocuments({ person }: Props) {
           <ListItem
             key={doc.id}
             secondaryAction={
-              <IconButton edge="end" onClick={() => setDeleteTarget(doc)}><DeleteIcon /></IconButton>
+              <IconButton edge="end" aria-label="Удалить" onClick={() => setDeleteTarget(doc)}><DeleteIcon /></IconButton>
             }
           >
             <ListItemText

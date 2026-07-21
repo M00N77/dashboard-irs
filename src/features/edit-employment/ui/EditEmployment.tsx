@@ -59,7 +59,7 @@ export default function EditEmployment({ person }: Props) {
           <ListItem
             key={rec.id}
             secondaryAction={
-              <IconButton edge="end" onClick={() => setDeleteTarget(rec)}><DeleteIcon /></IconButton>
+              <IconButton edge="end" aria-label="Удалить" onClick={() => setDeleteTarget(rec)}><DeleteIcon /></IconButton>
             }
           >
             <ListItemText

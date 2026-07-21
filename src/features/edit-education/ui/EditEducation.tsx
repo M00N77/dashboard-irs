@@ -85,7 +85,7 @@ export default function EditEducation({ person }: Props) {
           <ListItem
             key={record.id}
             secondaryAction={
-              <IconButton edge="end" onClick={() => setDeleteTarget(record)}>
+              <IconButton edge="end" aria-label="Удалить" onClick={() => setDeleteTarget(record)}>
                 <DeleteIcon />
               </IconButton>
             }

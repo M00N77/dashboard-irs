@@ -180,7 +180,7 @@ export default function PersonTableWidget() {
       )}
 
       <TableContainer sx={{ overflowX: 'auto', width: '100%' }}>
-      <Table size="small">
+      <Table size="small" aria-label="Картотека граждан">
         <TableHead>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
@@ -207,8 +207,17 @@ export default function PersonTableWidget() {
             <TableRow
               key={row.id}
               hover
-              sx={{ cursor: 'pointer' }}
+              role="link"
+              tabIndex={0}
+              aria-label={`Открыть карточку: ${row.original.lastName} ${row.original.firstName} ${row.original.middleName}`}
+              sx={{ cursor: 'pointer', '&:focus-visible': { outline: '2px solid', outlineColor: 'primary.main', outlineOffset: '-2px' } }}
               onClick={() => navigate(`/registry/${row.original.id}`)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  navigate(`/registry/${row.original.id}`)
+                }
+              }}
             >
               {row.getVisibleCells().map((cell) => (
                 <TableCell key={cell.id} sx={{ px: { xs: 1, sm: 2 }, py: { xs: 1, sm: 1.5 }, fontSize: { xs: '0.75rem', sm: '0.875rem' }, minWidth: columnWidths[cell.column.id] }}>

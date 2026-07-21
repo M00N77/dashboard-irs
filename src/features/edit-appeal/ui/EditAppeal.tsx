@@ -158,6 +158,7 @@ export default function EditAppeal({ person }: Props) {
             </TextField>
 
             <IconButton
+              aria-label="Удалить"
               onClick={() => setDeleteTarget(appeal)}
               size="small"
               sx={{ justifySelf: 'end' }}

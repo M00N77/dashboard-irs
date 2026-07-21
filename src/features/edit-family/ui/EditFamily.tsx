@@ -88,7 +88,7 @@ export default function EditFamily({ person }: Props) {
           <ListItem
             key={member.id}
             secondaryAction={
-              <IconButton edge="end" onClick={() => setDeleteTarget(member)}>
+              <IconButton edge="end" aria-label="Удалить" onClick={() => setDeleteTarget(member)}>
                 <DeleteIcon />
               </IconButton>
             }

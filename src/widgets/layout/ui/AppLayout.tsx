@@ -39,7 +39,7 @@ export default function AppLayout() {
           ))}
         </Toolbar>
       </AppBar>
-      <Container maxWidth="xl" sx={{ py: 3, flex: 1 }}>
+      <Container component="main" maxWidth="xl" sx={{ py: 3, flex: 1 }}>
         <Suspense fallback={
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
             <CircularProgress />
