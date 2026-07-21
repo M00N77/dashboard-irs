@@ -2,17 +2,7 @@
 
 [Demo](https://dashboard-irs.vercel.app)
 
-<<<<<<< Updated upstream
 Современная веб-платформа для управления обращениями и учёта данных граждан, разработанная на основе анализа портала ППК РЭО. Проект трансформирует концепцию тяжёлых корпоративных СЭД в быстрый, адаптивный SPA с фокусом на UX и производительность.
-
-![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
-![Vite](https://img.shields.io/badge/Vite-6-646CFF?logo=vite)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript)
-![MUI](https://img.shields.io/badge/MUI-9-007FFF?logo=mui)
-![MSW](https://img.shields.io/badge/MSW-2-FF6A33)
-![TanStack Query](https://img.shields.io/badge/TanStack_Query-5-FF4154?logo=reactquery)
-
----
 
 ## 🚀 Функционал
 
