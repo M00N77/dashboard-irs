@@ -19,7 +19,7 @@ function buildStats(persons: PersonDetails[]): StatsResponse {
     const birth = new Date(p.birthDate)
     const age = now.getFullYear() - birth.getFullYear()
     const group =
-      age < 18 ? 'under 18' : age <= 30 ? '18-30' : age <= 45 ? '30-45' : age <= 60 ? '45-60' : '60+'
+      age < 18 ? 'До 18' : age <= 30 ? '18–30' : age <= 45 ? '31–45' : age <= 60 ? '46–60' : '60+'
     ageGroups[group] = (ageGroups[group] || 0) + 1
   }
 
