@@ -55,6 +55,7 @@ export default function EditPersonGeneral({ person }: Props) {
     mutationFn: (data: PersonGeneralFormValues) => updatePerson(person.id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['person', person.id] })
+      queryClient.invalidateQueries({ queryKey: ['stats'] })
       setIsEditing(false)
     },
   })

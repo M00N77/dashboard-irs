@@ -60,6 +60,7 @@ export default function EditAppeal({ person }: Props) {
     mutationFn: (data: AppealFormValues) => addAppeal(person.id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['person', person.id] })
+      queryClient.invalidateQueries({ queryKey: ['stats'] })
       setShowForm(false)
       resetForm()
     },
@@ -70,6 +71,7 @@ export default function EditAppeal({ person }: Props) {
       updateAppealStatus(person.id, appealId, status),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['person', person.id] })
+      queryClient.invalidateQueries({ queryKey: ['stats'] })
     },
   })
 
@@ -77,6 +79,7 @@ export default function EditAppeal({ person }: Props) {
     mutationFn: (appealId: number) => deleteAppeal(person.id, appealId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['person', person.id] })
+      queryClient.invalidateQueries({ queryKey: ['stats'] })
       setDeleteTarget(null)
     },
   })
