@@ -168,7 +168,7 @@ export default function EditPersonGeneral({ person }: Props) {
         <FormControl fullWidth size="small" sx={{ mb: 2 }} disabled={disabled}>
           <InputLabel>Категории льгот</InputLabel>
           <Select multiple value={field.value ?? []} onChange={(e) => field.onChange(e.target.value)} input={<OutlinedInput label="Категории льгот" />}
-            renderValue={(sel) => <Stack direction="row" spacing={0.5} flexWrap="wrap">{(sel as string[]).map((v) => <Chip key={v} label={v} size="small" />)}</Stack>}>
+            renderValue={(sel) => <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap' }}>{(sel as string[]).map((v) => <Chip key={v} label={v} size="small" />)}</Stack>}>
             {BENEFIT_CATEGORIES.map((c) => <MenuItem key={c} value={c}>{c}</MenuItem>)}
           </Select>
         </FormControl>
