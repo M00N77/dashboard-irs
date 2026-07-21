@@ -25,6 +25,7 @@ import type { PersonSummary } from '@entities/person/model/types'
 import { usePersonsQuery } from '@entities/person/model/usePersonsQuery'
 import { useUrlState } from '@features/person-filters/lib/useUrlState'
 import { formatDate } from '@shared/lib/date'
+import { GENDER_LABELS, PERSON_STATUS_LABELS } from '@shared/config/dictionaries'
 
 const columnHelper = createColumnHelper<PersonSummary>()
 
@@ -39,9 +40,11 @@ const columns = [
   }),
   columnHelper.accessor('gender', {
     header: 'Пол',
+    cell: (info) => GENDER_LABELS[info.getValue() as string] ?? (info.getValue() as string),
   }),
   columnHelper.accessor('status', {
     header: 'Статус',
+    cell: (info) => PERSON_STATUS_LABELS[info.getValue() as string] ?? (info.getValue() as string),
   }),
   columnHelper.accessor('region', {
     header: 'Регион',
