@@ -1,4 +1,4 @@
-import { faker } from '@faker-js/faker'
+import { fakerRU as faker } from '@faker-js/faker'
 import { REGIONS, APPEAL_CATEGORIES, APPEAL_SOURCES, APPEAL_STATUSES, PERSON_STATUSES, FAMILY_RELATIONS, HOUSING_TYPES, OWNERSHIP_TYPES, EDUCATION_DEGREES, GENDERS } from '../src/shared/config/dictionaries'
 import { writeFileSync, existsSync, mkdirSync } from 'fs'
 import { join, dirname } from 'path'
@@ -17,7 +17,12 @@ const COUNT = 5000
 let nextPersonId = 1000
 let nextSubId = 1
 
-
+const INSTITUTIONS = [
+  'МГУ им. М.В. Ломоносова', 'СПбГУ', 'МГТУ им. Н.Э. Баумана', 'НИУ ВШЭ',
+  'МФТИ', 'Казанский федеральный университет', 'УрФУ им. Б.Н. Ельцина',
+  'Новосибирский государственный университет', 'РАНХиГС', 'РУДН',
+  'СПбПУ Петра Великого', 'Томский государственный университет',
+]
 
 function generateFamilyMember(personId: number): FamilyMember {
   const gender = faker.helpers.arrayElement([...GENDERS]) as 'male' | 'female'
@@ -25,8 +30,8 @@ function generateFamilyMember(personId: number): FamilyMember {
     id: nextSubId++,
     personId,
     relation: faker.helpers.arrayElement([...FAMILY_RELATIONS]),
-    firstName: faker.person.firstName(gender === 'male' ? 'male' : 'female'),
-    lastName: faker.person.lastName(),
+    firstName: faker.person.firstName(gender),
+    lastName: faker.person.lastName(gender),
     birthDate: faker.date.birthdate({ min: 1, max: 80, mode: 'age' }).toISOString().split('T')[0],
   }
 }
@@ -36,7 +41,7 @@ function generateEducationRecord(personId: number): EducationRecord {
   return {
     id: nextSubId++,
     personId,
-    institution: faker.company.name() + ' University',
+    institution: faker.helpers.arrayElement(INSTITUTIONS),
     degree: faker.helpers.arrayElement([...EDUCATION_DEGREES]),
     startYear,
     endYear: startYear + faker.number.int({ min: 2, max: 6 }),
@@ -91,9 +96,9 @@ function generateAppeal(personId: number): Appeal {
 function generatePerson(): PersonDetails {
   const id = nextPersonId++
   const gender = faker.helpers.arrayElement([...GENDERS]) as 'male' | 'female'
-  const firstName = faker.person.firstName(gender === 'male' ? 'male' : 'female')
-  const lastName = faker.person.lastName()
-  const middleName = faker.person.middleName(gender === 'male' ? 'male' : 'female')
+  const firstName = faker.person.firstName(gender)
+  const lastName = faker.person.lastName(gender)
+  const middleName = faker.person.middleName(gender)
   const birthDate = faker.date.birthdate({ min: 18, max: 90, mode: 'age' }).toISOString().split('T')[0]
 
   const familyCount = faker.number.int({ min: 0, max: 4 })
@@ -115,7 +120,7 @@ function generatePerson(): PersonDetails {
     passportNumber: faker.string.numeric({ length: 6 }),
     address: faker.location.streetAddress(true),
     phone: faker.phone.number(),
-    email: faker.internet.email({ firstName, lastName }),
+    email: faker.internet.email().toLowerCase(),
     family: Array.from({ length: familyCount }, () => generateFamilyMember(id)),
     education: Array.from({ length: educationCount }, () => generateEducationRecord(id)),
     employment: Array.from({ length: employmentCount }, () => generateEmploymentRecord(id)),
