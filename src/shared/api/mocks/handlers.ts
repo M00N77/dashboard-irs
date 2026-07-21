@@ -238,6 +238,35 @@ export const handlers = [
     return HttpResponse.json(null, { status: 204 })
   }),
 
+  http.post('/api/persons/:id/employment', async ({ params, request }) => {
+    await mutationDelay()
+    const body = (await request.json()) as Record<string, unknown>
+    const personId = parseInt(params.id as string, 10)
+    const newRecord = { id: Date.now(), personId, ...body }
+    const idx = findPersonIndex(personId)
+    if (idx !== null) {
+      const persons = getCachedPersonsSync()
+      if (persons) persons[idx].employment.push(newRecord as never)
+    }
+    return HttpResponse.json(newRecord, { status: 201 })
+  }),
+
+  http.delete('/api/persons/:id/employment/:recordId', async ({ params }) => {
+    await mutationDelay()
+    const id = parseInt(params.id as string, 10)
+    const recordId = parseInt(params.recordId as string, 10)
+    const idx = findPersonIndex(id)
+    if (idx !== null) {
+      const persons = getCachedPersonsSync()
+      if (persons) {
+        persons[idx].employment = persons[idx].employment.filter(
+          (r: { id: number }) => r.id !== recordId,
+        )
+      }
+    }
+    return HttpResponse.json(null, { status: 204 })
+  }),
+
   // Appeal handlers
 
   http.post('/api/persons/:id/appeals', async ({ params, request }) => {
@@ -302,6 +331,64 @@ export const handlers = [
       }
     }
     invalidateStatsCache()
+    return HttpResponse.json(null, { status: 204 })
+  }),
+
+  http.post('/api/persons/:id/documents', async ({ params, request }) => {
+    await mutationDelay()
+    const body = (await request.json()) as Record<string, unknown>
+    const personId = parseInt(params.id as string, 10)
+    const newRecord = { id: Date.now(), personId, ...body }
+    const idx = findPersonIndex(personId)
+    if (idx !== null) {
+      const persons = getCachedPersonsSync()
+      if (persons) persons[idx].documents.push(newRecord as never)
+    }
+    return HttpResponse.json(newRecord, { status: 201 })
+  }),
+
+  http.delete('/api/persons/:id/documents/:recordId', async ({ params }) => {
+    await mutationDelay()
+    const id = parseInt(params.id as string, 10)
+    const recordId = parseInt(params.recordId as string, 10)
+    const idx = findPersonIndex(id)
+    if (idx !== null) {
+      const persons = getCachedPersonsSync()
+      if (persons) {
+        persons[idx].documents = persons[idx].documents.filter(
+          (r: { id: number }) => r.id !== recordId,
+        )
+      }
+    }
+    return HttpResponse.json(null, { status: 204 })
+  }),
+
+  http.post('/api/persons/:id/benefits', async ({ params, request }) => {
+    await mutationDelay()
+    const body = (await request.json()) as Record<string, unknown>
+    const personId = parseInt(params.id as string, 10)
+    const newRecord = { id: Date.now(), personId, ...body }
+    const idx = findPersonIndex(personId)
+    if (idx !== null) {
+      const persons = getCachedPersonsSync()
+      if (persons) persons[idx].benefits.push(newRecord as never)
+    }
+    return HttpResponse.json(newRecord, { status: 201 })
+  }),
+
+  http.delete('/api/persons/:id/benefits/:recordId', async ({ params }) => {
+    await mutationDelay()
+    const id = parseInt(params.id as string, 10)
+    const recordId = parseInt(params.recordId as string, 10)
+    const idx = findPersonIndex(id)
+    if (idx !== null) {
+      const persons = getCachedPersonsSync()
+      if (persons) {
+        persons[idx].benefits = persons[idx].benefits.filter(
+          (r: { id: number }) => r.id !== recordId,
+        )
+      }
+    }
     return HttpResponse.json(null, { status: 204 })
   }),
 ]

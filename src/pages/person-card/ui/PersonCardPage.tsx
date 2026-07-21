@@ -19,11 +19,17 @@ const EditFamily = lazy(() => import('@features/edit-family/ui/EditFamily'))
 const EditEducation = lazy(() => import('@features/edit-education/ui/EditEducation'))
 const EditHousing = lazy(() => import('@features/edit-housing/ui/EditHousing'))
 const EditAppeal = lazy(() => import('@features/edit-appeal/ui/EditAppeal'))
+const EditEmployment = lazy(() => import('@features/edit-employment/ui/EditEmployment'))
+const EditDocuments = lazy(() => import('@features/edit-documents/ui/EditDocuments'))
+const EditBenefits = lazy(() => import('@features/edit-benefits/ui/EditBenefits'))
 
 const TABS = [
   { value: 'general', label: 'Общие сведения' },
   { value: 'family', label: 'Семья' },
   { value: 'education', label: 'Образование' },
+  { value: 'employment', label: 'Занятость' },
+  { value: 'documents', label: 'Документы' },
+  { value: 'benefits', label: 'Льготы' },
   { value: 'housing', label: 'Жильё' },
   { value: 'appeals', label: 'Обращения' },
 ]
@@ -139,6 +145,9 @@ export default function PersonCardPage() {
           {activeTab === 'education' && <EditEducation person={person} />}
           {activeTab === 'housing' && <EditHousing person={person} />}
           {activeTab === 'appeals' && <EditAppeal person={person} />}
+          {activeTab === 'employment' && <EditEmployment person={person} />}
+          {activeTab === 'documents' && <EditDocuments person={person} />}
+          {activeTab === 'benefits' && <EditBenefits person={person} />}
         </Suspense>
       </Box>
     </Container>

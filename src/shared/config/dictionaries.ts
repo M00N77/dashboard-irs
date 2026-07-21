@@ -79,3 +79,25 @@ export const EDUCATION_DEGREES = [
 export function toOptions(labels: Record<string, string>): { value: string; label: string }[] {
   return Object.keys(labels).map((value) => ({ value, label: labels[value] }))
 }
+
+export const CITIZENSHIPS = ['Российская Федерация', 'Республика Беларусь', 'Казахстан', 'Узбекистан', 'Армения', 'Иное'] as const
+
+export const MARITAL_STATUSES = ['single', 'married', 'divorced', 'widowed'] as const
+export const MARITAL_STATUS_LABELS: Record<string, string> = { single: 'Не женат / не замужем', married: 'В браке', divorced: 'В разводе', widowed: 'Вдовец / вдова' }
+
+export const CONTACT_CHANNELS = ['phone', 'email', 'portal', 'mail'] as const
+export const CONTACT_CHANNEL_LABELS: Record<string, string> = { phone: 'Телефон', email: 'Эл. почта', portal: 'Портал', mail: 'Почта' }
+
+export const EMPLOYMENT_STATUSES = ['employed', 'unemployed', 'student', 'retired', 'self-employed'] as const
+export const EMPLOYMENT_STATUS_LABELS: Record<string, string> = { employed: 'Работает', unemployed: 'Не работает', student: 'Студент', retired: 'Пенсионер', 'self-employed': 'Самозанятый' }
+
+export const DISABILITY_GROUPS = ['none', '1', '2', '3'] as const
+export const DISABILITY_GROUP_LABELS: Record<string, string> = { none: 'Нет', '1': 'I группа', '2': 'II группа', '3': 'III группа' }
+
+export const BENEFIT_CATEGORIES = ['Ветеран труда', 'Инвалид', 'Многодетная семья', 'Малоимущий', 'Пенсионер', 'Чернобылец', 'Почётный донор'] as const
+
+export const DOCUMENT_TYPES = ['Паспорт РФ', 'СНИЛС', 'ИНН', 'Свидетельство о рождении', 'Водительское удостоверение', 'Полис ОМС', 'Заграничный паспорт', 'Иное'] as const
+
+export const BENEFIT_KINDS = ['Ежемесячная денежная выплата', 'Компенсация ЖКХ', 'Льготный проезд', 'Субсидия', 'Материнский капитал', 'Иное'] as const
+export const BENEFIT_STATUSES = ['active', 'suspended', 'expired'] as const
+export const BENEFIT_STATUS_LABELS: Record<string, string> = { active: 'Действует', suspended: 'Приостановлена', expired: 'Завершена' }

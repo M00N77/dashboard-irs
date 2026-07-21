@@ -12,6 +12,6 @@ export const appealFormSchema = z.object({
   responsible: z.string().min(1, 'Обязательное поле'),
   dueDate: z.string().min(1, 'Обязательное поле'),
   resolutionText: z.string().optional(),
-})
+}).refine((d) => !d.dueDate || !d.registeredAt || d.dueDate >= d.registeredAt, { message: 'Срок не раньше даты регистрации', path: ['dueDate'] })
 
 export type AppealFormValues = z.infer<typeof appealFormSchema>

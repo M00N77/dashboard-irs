@@ -119,3 +119,32 @@ export function deleteAppeal(id: number, appealId: number): Promise<void> {
     method: 'DELETE',
   })
 }
+
+export function addEmploymentRecord(
+  id: number,
+  data: { company: string; position: string; startDate: string; endDate: string | null },
+): Promise<import('@entities/employment/model/types').EmploymentRecord> {
+  return apiClient(`/api/persons/${id}/employment`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+}
+
+export function deleteEmploymentRecord(id: number, recordId: number): Promise<void> {
+  return apiClient<void>(`/api/persons/${id}/employment/${recordId}`, {
+    method: 'DELETE',
+  })
+}
+
+export function addDocument(id: number, data: Record<string, unknown>) {
+  return apiClient(`/api/persons/${id}/documents`, { method: 'POST', body: JSON.stringify(data) })
+}
+export function deleteDocument(id: number, recordId: number): Promise<void> {
+  return apiClient<void>(`/api/persons/${id}/documents/${recordId}`, { method: 'DELETE' })
+}
+export function addBenefit(id: number, data: Record<string, unknown>) {
+  return apiClient(`/api/persons/${id}/benefits`, { method: 'POST', body: JSON.stringify(data) })
+}
+export function deleteBenefit(id: number, recordId: number): Promise<void> {
+  return apiClient<void>(`/api/persons/${id}/benefits/${recordId}`, { method: 'DELETE' })
+}
